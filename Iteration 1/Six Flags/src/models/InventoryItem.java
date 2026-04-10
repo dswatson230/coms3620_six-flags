@@ -1,5 +1,6 @@
 package models;
  
+import interfaces.ItemStatus;
 import interfaces.Location;
  
 public class InventoryItem extends Item {
@@ -10,12 +11,12 @@ public class InventoryItem extends Item {
         this.quantity = quantity;
     }
  
-    @Override
+    @Override 
     public int getQuantity() { return quantity; }
  
     @Override
     public String getInfo() {
-        return "Name: " + getName() + " | Price: $" + getPrice() + " | Quantity: " + quantity + " | Location: " + getLocation();
+        return "Name: " + getName() + " | Price: $" + getPrice() + " | Quantity: " + quantity + " | Location: " + getLocation() + " | Status: " + getStatus();
     }
 }
  
