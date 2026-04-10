@@ -1,3 +1,5 @@
+package interfaces;
+
 public enum Location {
     MAGIC_MOUNTAIN,
     FIESTA_TEXAS,
