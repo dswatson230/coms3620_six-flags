@@ -1,3 +1,5 @@
+package interfaces;
+
 import interfaces.ItemConfirmationInterface;
 import javax.swing.JOptionPane;
  
