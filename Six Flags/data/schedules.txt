@@ -1,0 +1,5 @@
+E001|John Smith|Operations|01/01/2025|08:00|17:00
+E002|Jane Doe|Security|04/03/2025|08:00|16:08
+E003|Carlos Rivera|Food & Beverage|01/01/2025|08:00|17:00
+E007|David Kim|Human Resources|04/16/2026|09:00|17:00
+E001|John Smith|Operations|04/16/2025|08:00|17:00
