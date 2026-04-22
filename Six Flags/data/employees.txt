@@ -8,3 +8,5 @@ E007 | David Kim | Human Resources
 E008 | Ashley Brown | Finance
 E009 | James Taylor | Design
 E010 | Priya Patel | Production
+E011 | Maya Johnson | Rides & Attractions
+E012 | Ethan Brown | Security

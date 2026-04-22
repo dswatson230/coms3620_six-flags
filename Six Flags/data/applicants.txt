@@ -1,0 +1,4 @@
+A001 | Maya Johnson | HIRED
+A002 | Ethan Brown | HIRED
+A003 | Sophia Garcia | ACTIVE
+A004 | Liam Wilson | ACTIVE

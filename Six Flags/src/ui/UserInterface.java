@@ -19,7 +19,7 @@ public class UserInterface {
         this.frame        = new JFrame("Six Flags Management System");
         this.purchaseUI   = new PurchaseUI(controller, this);
         this.inventoryUI  = new InventoryUI(frame, controller, this);
-        this.schedulingUI = new SchedulingUI(frame, this);
+        this.schedulingUI = new SchedulingUI();
         this.validationUI = new ValidationUI(frame, this);
         this.rideStatusUI = new RideStatusUI(frame, this);
     }
@@ -46,7 +46,16 @@ public class UserInterface {
  
         purchaseBtn.addActionListener(e  -> purchaseUI.showLocationSelection());
         inventoryBtn.addActionListener(e -> inventoryUI.showInventoryMenu());
-        employeeBtn.addActionListener(e  -> schedulingUI.showSchedulingMenu());
+        employeeBtn.addActionListener(e  -> {
+            frame.setVisible(false);
+            new Thread(() -> {
+                schedulingUI.showSchedulingMenu();
+                SwingUtilities.invokeLater(() -> {
+                    showMainMenu();
+                    frame.setVisible(true);
+                });
+            }).start();
+        });
         validateBtn.addActionListener(e  -> validationUI.showValidationMenu());
         rideBtn.addActionListener(e      -> rideStatusUI.showRideMenu());
  

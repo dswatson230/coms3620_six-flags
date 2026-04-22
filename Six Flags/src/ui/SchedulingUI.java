@@ -1,180 +1,277 @@
 package ui;
- 
+
+import controllers.HiringController;
+import controllers.HiringSystem;
 import controllers.SchedulingController;
 import controllers.SchedulingSystem;
+import data.ApplicantFileHandler;
 import data.EmployeeFileHandler;
+import data.JobOpeningFileHandler;
 import data.ScheduleFileHandler;
+import interfaces.HiringControllerInterface;
 import interfaces.ScheduleFileHandlerInterface;
 import interfaces.SchedulingControllerInterface;
+import models.Applicant;
 import models.Employee;
 import models.EmployeeSchedule;
- 
-import javax.swing.*;
-import java.awt.*;
+import models.JobOpening;
+
 import java.util.List;
- 
+import java.util.Scanner;
+
 public class SchedulingUI {
-    private final JFrame frame;
-    private final UserInterface router;
+    private static final String EMPLOYEE_FILE_PATH    = "data/employees.txt";
+    private static final String SCHEDULE_FILE_PATH    = "data/schedules.txt";
+    private static final String APPLICANT_FILE_PATH   = "data/applicants.txt";
+    private static final String JOB_OPENING_FILE_PATH = "data/job_openings.txt";
+
     private final SchedulingControllerInterface schedulingController;
+    private final HiringControllerInterface hiringController;
     private final ScheduleFileHandlerInterface scheduleFileHandler;
+    private final ApplicantFileHandler applicantFileHandler;
     private final EmployeeFileHandler employeeFileHandler;
- 
-    public SchedulingUI(JFrame frame, UserInterface router) {
-        this.frame               = frame;
-        this.router              = router;
-        this.employeeFileHandler = new EmployeeFileHandler("C:/Users/longi/COMS/coms3620/six-flags/Iteration 1/Six Flags/data/employees.txt");
-        this.scheduleFileHandler = new ScheduleFileHandler("C:/Users/longi/COMS/coms3620/six-flags/Iteration 1/Six Flags/data/schedules.txt");
+    private final JobOpeningFileHandler jobOpeningFileHandler;
+    private final Scanner scanner;
+
+    public SchedulingUI() {
+        this(new Scanner(System.in));
+    }
+
+    public SchedulingUI(Scanner scanner) {
+        this.scanner               = scanner;
+        this.applicantFileHandler  = new ApplicantFileHandler(APPLICANT_FILE_PATH);
+        this.employeeFileHandler   = new EmployeeFileHandler(EMPLOYEE_FILE_PATH);
+        this.jobOpeningFileHandler = new JobOpeningFileHandler(JOB_OPENING_FILE_PATH);
+        this.scheduleFileHandler   = new ScheduleFileHandler(SCHEDULE_FILE_PATH);
         this.schedulingController = new SchedulingController(
             new SchedulingSystem(employeeFileHandler, scheduleFileHandler));
+        this.hiringController = new HiringController(
+            new HiringSystem(
+                applicantFileHandler,
+                employeeFileHandler,
+                jobOpeningFileHandler));
     }
- 
+
     public void showSchedulingMenu() {
-        JPanel panel = new JPanel(new GridLayout(4, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(40, 80, 40, 80));
-        JLabel label = new JLabel("Employee Management", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 18));
-        JButton scheduleBtn = new JButton("Schedule Employee");
-        JButton viewBtn     = new JButton("View Schedules");
-        JButton backBtn     = new JButton("Back");
-        scheduleBtn.addActionListener(e -> showEmployeeSelection());
-        viewBtn.addActionListener(e     -> showViewSchedules());
-        backBtn.addActionListener(e     -> router.showMainMenu());
-        panel.add(label); panel.add(scheduleBtn); panel.add(viewBtn); panel.add(backBtn);
-        router.setPanel(panel);
+        boolean running = true;
+        while (running) {
+            System.out.println();
+            System.out.println("Employee Management");
+            System.out.println("1. Hire Employee");
+            System.out.println("2. Schedule Employee");
+            System.out.println("3. View Schedules");
+            System.out.println("4. Back");
+
+            String choice = readLine("Select an option: ");
+            switch (choice) {
+                case "1":
+                    showHireEmployeeForm();
+                    break;
+                case "2":
+                    showEmployeeSelection();
+                    break;
+                case "3":
+                    showViewSchedules();
+                    break;
+                case "4":
+                    running = false;
+                    break;
+                default:
+                    System.out.println("Invalid option. Please try again.");
+                    break;
+            }
+        }
     }
- 
+
+    private void showHireEmployeeForm() {
+        boolean entering = true;
+        while (entering) {
+            System.out.println();
+            System.out.println("Hire Employee");
+            showAvailableApplicants();
+            showAvailableJobOpenings();
+            System.out.println("Enter C at any prompt to cancel.");
+
+            String applicantId = readLine("Applicant ID: ");
+            if (isCancel(applicantId)) return;
+
+            String employeeId = readLine("New Employee ID: ");
+            if (isCancel(employeeId)) return;
+
+            String jobOpeningId = readLine("Job Opening ID: ");
+            if (isCancel(jobOpeningId)) return;
+
+            String result = hiringController.hireEmployee(applicantId, employeeId, jobOpeningId);
+            System.out.println(result);
+
+            if (result.contains("successfully")
+                    || result.equals("Applicant does not exist.")
+                    || result.equals("Unable to hire employee because of a file error.")) {
+                entering = false;
+            }
+        }
+    }
+
+    private void showAvailableApplicants() {
+        List<Applicant> applicants;
+        try {
+            applicants = applicantFileHandler.readAllApplicants();
+        } catch (Exception e) {
+            System.out.println("Could not load applicants.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Available Applicants");
+        System.out.printf("%-12s %-24s %-10s%n", "ID", "Name", "Status");
+        System.out.println("------------------------------------------------");
+        boolean found = false;
+        for (Applicant applicant : applicants) {
+            if (applicant.isActive()) {
+                System.out.printf("%-12s %-24s %-10s%n",
+                    applicant.getApplicantId(),
+                    applicant.getApplicantName(),
+                    applicant.getApplicantStatus());
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No active applicants found.");
+        }
+    }
+
+    private void showAvailableJobOpenings() {
+        List<JobOpening> jobOpenings;
+        try {
+            jobOpenings = jobOpeningFileHandler.readAllJobOpenings();
+        } catch (Exception e) {
+            System.out.println("Could not load job openings.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Available Job Openings");
+        System.out.printf("%-12s %-28s %-22s %-10s%n", "ID", "Title", "Department", "Status");
+        System.out.println("----------------------------------------------------------------------------");
+        boolean found = false;
+        for (JobOpening jobOpening : jobOpenings) {
+            if (jobOpening.isAvailable()) {
+                System.out.printf("%-12s %-28s %-22s %-10s%n",
+                    jobOpening.getJobOpeningId(),
+                    jobOpening.getJobTitle(),
+                    jobOpening.getDepartmentName(),
+                    jobOpening.getOpeningStatus());
+                found = true;
+            }
+        }
+        if (!found) {
+            System.out.println("No available job openings found.");
+        }
+    }
+
     private void showEmployeeSelection() {
         List<Employee> employees;
-        try { employees = employeeFileHandler.readAllEmployees(); }
-        catch (Exception e) { showError("Could not load employees."); return; }
- 
-        JPanel panel = new JPanel(new GridLayout(employees.size() + 2, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 60, 20, 60));
-        JLabel label = new JLabel("Select Employee:", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 16));
-        panel.add(label);
-        for (Employee emp : employees) {
-            JButton btn = new JButton(emp.getEmployeeName() + " — " + emp.getDepartmentName());
-            btn.addActionListener(e -> showScheduleForm(emp));
-            panel.add(btn);
+        try {
+            employees = employeeFileHandler.readAllEmployees();
+        } catch (Exception e) {
+            System.out.println("Could not load employees.");
+            return;
         }
-        JButton back = new JButton("Back");
-        back.addActionListener(e -> showSchedulingMenu());
-        panel.add(back);
-        router.setPanel(panel);
+
+        if (employees.isEmpty()) {
+            System.out.println("No employees found.");
+            return;
+        }
+
+        System.out.println();
+        System.out.println("Select Employee");
+        for (int i = 0; i < employees.size(); i++) {
+            Employee employee = employees.get(i);
+            System.out.println((i + 1) + ". " + employee.getEmployeeName()
+                + " - " + employee.getDepartmentName());
+        }
+        System.out.println("C. Cancel");
+
+        String choice = readLine("Select an employee: ");
+        if (isCancel(choice)) return;
+
+        try {
+            int index = Integer.parseInt(choice) - 1;
+            if (index < 0 || index >= employees.size()) {
+                System.out.println("Invalid employee selection.");
+                return;
+            }
+            showScheduleForm(employees.get(index));
+        } catch (NumberFormatException e) {
+            System.out.println("Invalid employee selection.");
+        }
     }
- 
+
     private void showScheduleForm(Employee employee) {
-        // Spinners
-        JSpinner month = new JSpinner(new SpinnerNumberModel(1,    1,    12,   1));
-        JSpinner day   = new JSpinner(new SpinnerNumberModel(1,    1,    31,   1));
-        JSpinner year  = new JSpinner(new SpinnerNumberModel(2025, 2024, 2030, 1));
-        JSpinner sHour = new JSpinner(new SpinnerNumberModel(8,    1,    12,   1));
-        JSpinner sMin  = new JSpinner(new SpinnerNumberModel(0,    0,    59,   1));
-        JComboBox<String> sAmPm = new JComboBox<>(new String[]{"AM", "PM"});
-        JSpinner eHour = new JSpinner(new SpinnerNumberModel(5,    1,    12,   1));
-        JSpinner eMin  = new JSpinner(new SpinnerNumberModel(0,    0,    59,   1));
-        JComboBox<String> eAmPm = new JComboBox<>(new String[]{"AM", "PM"});
-        eAmPm.setSelectedItem("PM");
- 
-        // Date row
-        JPanel dateRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        dateRow.add(new JLabel("Month:")); dateRow.add(month);
-        dateRow.add(new JLabel("Day:"));   dateRow.add(day);
-        dateRow.add(new JLabel("Year:"));  dateRow.add(year);
- 
-        // Start time row
-        JPanel startRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        startRow.add(new JLabel("Hour:")); startRow.add(sHour);
-        startRow.add(new JLabel("Min:"));  startRow.add(sMin);
-        startRow.add(sAmPm);
- 
-        // End time row
-        JPanel endRow = new JPanel(new FlowLayout(FlowLayout.LEFT, 8, 0));
-        endRow.add(new JLabel("Hour:")); endRow.add(eHour);
-        endRow.add(new JLabel("Min:"));  endRow.add(eMin);
-        endRow.add(eAmPm);
- 
-        // Button row
-        JButton submit = new JButton("Submit");
-        JButton back   = new JButton("Back");
-        JPanel btnRow  = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        btnRow.add(back); btnRow.add(submit);
- 
-        // Stack everything vertically
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
- 
-        panel.add(centered("Scheduling: " + employee.getEmployeeName(), Font.BOLD, 16));
-        panel.add(Box.createVerticalStrut(10));
-        panel.add(leftLabel("Date:"));     panel.add(dateRow);
-        panel.add(Box.createVerticalStrut(8));
-        panel.add(leftLabel("Start Time:")); panel.add(startRow);
-        panel.add(Box.createVerticalStrut(8));
-        panel.add(leftLabel("End Time:"));   panel.add(endRow);
-        panel.add(Box.createVerticalStrut(15));
-        panel.add(btnRow);
- 
-        submit.addActionListener(e -> {
-            String date  = String.format("%02d/%02d/%04d", month.getValue(), day.getValue(), year.getValue());
-            String start = toTime((int)sHour.getValue(), (int)sMin.getValue(), (String)sAmPm.getSelectedItem());
-            String end   = toTime((int)eHour.getValue(), (int)eMin.getValue(), (String)eAmPm.getSelectedItem());
-            String result = schedulingController.manageEmployeeSchedule(employee.getEmployeeId(), date, start, end);
-            boolean ok = result.contains("successfully");
-            JOptionPane.showMessageDialog(frame, result, "Result", ok ? JOptionPane.INFORMATION_MESSAGE : JOptionPane.ERROR_MESSAGE);
-            if (ok) showSchedulingMenu();
-        });
-        back.addActionListener(e -> showEmployeeSelection());
- 
-        router.setPanel(panel);
+        boolean entering = true;
+        while (entering) {
+            System.out.println();
+            System.out.println("Scheduling: " + employee.getEmployeeName());
+            System.out.println("Enter C at any prompt to cancel.");
+
+            String date = readLine("Date (MM/dd/yyyy): ");
+            if (isCancel(date)) return;
+
+            String start = readLine("Start Time (HH:mm): ");
+            if (isCancel(start)) return;
+
+            String end = readLine("End Time (HH:mm): ");
+            if (isCancel(end)) return;
+
+            String result = schedulingController.manageEmployeeSchedule(
+                employee.getEmployeeId(), date, start, end);
+            System.out.println(result);
+
+            if (result.contains("successfully")
+                    || result.equals("Employee does not exist.")
+                    || result.equals("Unable to save schedule because of a file error.")) {
+                entering = false;
+            }
+        }
     }
- 
+
     private void showViewSchedules() {
         List<EmployeeSchedule> schedules;
-        try { schedules = scheduleFileHandler.readAllSchedules(); }
-        catch (Exception e) { showError("Could not load schedules."); return; }
- 
-        String[] cols = {"Employee", "Department", "Date", "Start", "End"};
-        Object[][] data = schedules.stream().map(s ->
-            new Object[]{s.getEmployeeName(), s.getDepartmentName(), s.getScheduleDate(), to12Hour(s.getStartTime()), to12Hour(s.getEndTime())}
-        ).toArray(Object[][]::new);
- 
-        JTable table = new JTable(data, cols) {
-            @Override public boolean isCellEditable(int r, int c) { return false; }
-        };
-        JPanel outer = new JPanel(new BorderLayout());
-        JLabel lbl = new JLabel("Employee Schedules", SwingConstants.CENTER);
-        lbl.setFont(new Font("Arial", Font.BOLD, 16));
-        outer.add(lbl, BorderLayout.NORTH);
-        outer.add(new JScrollPane(table), BorderLayout.CENTER);
-        JButton back = new JButton("Back");
-        back.addActionListener(e -> showSchedulingMenu());
-        JPanel south = new JPanel(); south.add(back);
-        outer.add(south, BorderLayout.SOUTH);
-        router.setContentPane(outer);
+        try {
+            schedules = scheduleFileHandler.readAllSchedules();
+        } catch (Exception e) {
+            System.out.println("Could not load schedules.");
+            return;
+        }
+
+        if (schedules.isEmpty()) {
+            System.out.println("No schedules found.");
+            return;
+        }
+
+        System.out.println();
+        System.out.printf("%-20s %-22s %-12s %-10s %-10s%n",
+            "Employee", "Department", "Date", "Start", "End");
+        System.out.println("----------------------------------------------------------------------------");
+        for (EmployeeSchedule schedule : schedules) {
+            System.out.printf("%-20s %-22s %-12s %-10s %-10s%n",
+                schedule.getEmployeeName(),
+                schedule.getDepartmentName(),
+                schedule.getScheduleDate(),
+                to12Hour(schedule.getStartTime()),
+                to12Hour(schedule.getEndTime()));
+        }
     }
- 
-    private JLabel centered(String text, int style, int size) {
-        JLabel lbl = new JLabel(text, SwingConstants.CENTER);
-        lbl.setFont(new Font("Arial", style, size));
-        lbl.setAlignmentX(Component.CENTER_ALIGNMENT);
-        return lbl;
+
+    private String readLine(String prompt) {
+        System.out.print(prompt);
+        return scanner.nextLine().trim();
     }
- 
-    private JLabel leftLabel(String text) {
-        JLabel lbl = new JLabel(text);
-        lbl.setFont(new Font("Arial", Font.BOLD, 13));
-        return lbl;
+
+    private boolean isCancel(String value) {
+        return value.equalsIgnoreCase("C") || value.equalsIgnoreCase("CANCEL");
     }
- 
-    private String toTime(int hour, int min, String amPm) {
-        if (amPm.equals("AM") && hour == 12) hour = 0;
-        else if (amPm.equals("PM") && hour != 12) hour += 12;
-        return String.format("%02d:%02d", hour, min);
-    }
- 
+
     private String to12Hour(String time24) {
         String[] parts = time24.split(":");
         int hour = Integer.parseInt(parts[0]);
@@ -184,9 +281,8 @@ public class SchedulingUI {
         else if (hour > 12) hour -= 12;
         return String.format("%d:%02d %s", hour, min, amPm);
     }
- 
-    private void showError(String msg) {
-        JOptionPane.showMessageDialog(frame, msg, "Error", JOptionPane.ERROR_MESSAGE);
+
+    public static void main(String[] args) {
+        new SchedulingUI().showSchedulingMenu();
     }
 }
- 
