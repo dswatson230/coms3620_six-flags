@@ -1,171 +1,63 @@
 package ui;
 
-import controllers.HiringController;
-import controllers.HiringSystem;
 import controllers.SchedulingController;
 import controllers.SchedulingSystem;
-import data.ApplicantFileHandler;
 import data.EmployeeFileHandler;
-import data.JobOpeningFileHandler;
 import data.ScheduleFileHandler;
-import interfaces.HiringControllerInterface;
 import interfaces.ScheduleFileHandlerInterface;
 import interfaces.SchedulingControllerInterface;
-import models.Applicant;
 import models.Employee;
 import models.EmployeeSchedule;
-import models.JobOpening;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class SchedulingUI {
-    private static final String EMPLOYEE_FILE_PATH    = "data/employees.txt";
-    private static final String SCHEDULE_FILE_PATH    = "data/schedules.txt";
-    private static final String APPLICANT_FILE_PATH   = "data/applicants.txt";
-    private static final String JOB_OPENING_FILE_PATH = "data/job_openings.txt";
+    private static final String EMPLOYEE_FILE_PATH = "data/employees.txt";
+    private static final String SCHEDULE_FILE_PATH = "data/schedules.txt";
+
+    private static final String ANSI_BOLD  = "\u001B[1m";
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_RED   = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
 
     private final SchedulingControllerInterface schedulingController;
-    private final HiringControllerInterface hiringController;
-    private final ScheduleFileHandlerInterface scheduleFileHandler;
-    private final ApplicantFileHandler applicantFileHandler;
-    private final EmployeeFileHandler employeeFileHandler;
-    private final JobOpeningFileHandler jobOpeningFileHandler;
-    private final Scanner scanner;
+    private final ScheduleFileHandlerInterface  scheduleFileHandler;
+    private final EmployeeFileHandler           employeeFileHandler;
+    private final UserInterface                 router;
+    private final Scanner                       scanner;
 
-    public SchedulingUI() {
-        this(new Scanner(System.in));
-    }
-
-    public SchedulingUI(Scanner scanner) {
-        this.scanner               = scanner;
-        this.applicantFileHandler  = new ApplicantFileHandler(APPLICANT_FILE_PATH);
-        this.employeeFileHandler   = new EmployeeFileHandler(EMPLOYEE_FILE_PATH);
-        this.jobOpeningFileHandler = new JobOpeningFileHandler(JOB_OPENING_FILE_PATH);
-        this.scheduleFileHandler   = new ScheduleFileHandler(SCHEDULE_FILE_PATH);
+    public SchedulingUI(Scanner scanner, UserInterface router) {
+        this.scanner             = scanner;
+        this.router              = router;
+        this.employeeFileHandler = new EmployeeFileHandler(EMPLOYEE_FILE_PATH);
+        this.scheduleFileHandler = new ScheduleFileHandler(SCHEDULE_FILE_PATH);
         this.schedulingController = new SchedulingController(
             new SchedulingSystem(employeeFileHandler, scheduleFileHandler));
-        this.hiringController = new HiringController(
-            new HiringSystem(
-                applicantFileHandler,
-                employeeFileHandler,
-                jobOpeningFileHandler));
     }
 
     public void showSchedulingMenu() {
         boolean running = true;
         while (running) {
-            System.out.println();
-            System.out.println("Employee Management");
-            System.out.println("1. Hire Employee");
-            System.out.println("2. Schedule Employee");
-            System.out.println("3. View Schedules");
-            System.out.println("4. Back");
+            router.clearScreen();
+            router.printBanner();
+            System.out.println(ANSI_BOLD + "  Employee Scheduling" + ANSI_RESET);
+            System.out.println("  " + "-".repeat(34));
+            System.out.println("  1. Schedule Employee");
+            System.out.println("  2. View Schedules");
+            System.out.println("  3. Back");
+            System.out.println("  " + "-".repeat(34));
+            System.out.print("  Select an option: ");
 
-            String choice = readLine("Select an option: ");
+            String choice = scanner.nextLine().trim();
             switch (choice) {
-                case "1":
-                    showHireEmployeeForm();
-                    break;
-                case "2":
-                    showEmployeeSelection();
-                    break;
-                case "3":
-                    showViewSchedules();
-                    break;
-                case "4":
-                    running = false;
-                    break;
+                case "1": showEmployeeSelection(); break;
+                case "2": showViewSchedules();     break;
+                case "3": running = false;         break;
                 default:
-                    System.out.println("Invalid option. Please try again.");
-                    break;
+                    System.out.println(ANSI_RED + "  Invalid option. Please try again." + ANSI_RESET);
+                    router.pause();
             }
-        }
-    }
-
-    private void showHireEmployeeForm() {
-        boolean entering = true;
-        while (entering) {
-            System.out.println();
-            System.out.println("Hire Employee");
-            showAvailableApplicants();
-            showAvailableJobOpenings();
-            System.out.println("Enter C at any prompt to cancel.");
-
-            String applicantId = readLine("Applicant ID: ");
-            if (isCancel(applicantId)) return;
-
-            String employeeId = readLine("New Employee ID: ");
-            if (isCancel(employeeId)) return;
-
-            String jobOpeningId = readLine("Job Opening ID: ");
-            if (isCancel(jobOpeningId)) return;
-
-            String result = hiringController.hireEmployee(applicantId, employeeId, jobOpeningId);
-            System.out.println(result);
-
-            if (result.contains("successfully")
-                    || result.equals("Applicant does not exist.")
-                    || result.equals("Unable to hire employee because of a file error.")) {
-                entering = false;
-            }
-        }
-    }
-
-    private void showAvailableApplicants() {
-        List<Applicant> applicants;
-        try {
-            applicants = applicantFileHandler.readAllApplicants();
-        } catch (Exception e) {
-            System.out.println("Could not load applicants.");
-            return;
-        }
-
-        System.out.println();
-        System.out.println("Available Applicants");
-        System.out.printf("%-12s %-24s %-10s%n", "ID", "Name", "Status");
-        System.out.println("------------------------------------------------");
-        boolean found = false;
-        for (Applicant applicant : applicants) {
-            if (applicant.isActive()) {
-                System.out.printf("%-12s %-24s %-10s%n",
-                    applicant.getApplicantId(),
-                    applicant.getApplicantName(),
-                    applicant.getApplicantStatus());
-                found = true;
-            }
-        }
-        if (!found) {
-            System.out.println("No active applicants found.");
-        }
-    }
-
-    private void showAvailableJobOpenings() {
-        List<JobOpening> jobOpenings;
-        try {
-            jobOpenings = jobOpeningFileHandler.readAllJobOpenings();
-        } catch (Exception e) {
-            System.out.println("Could not load job openings.");
-            return;
-        }
-
-        System.out.println();
-        System.out.println("Available Job Openings");
-        System.out.printf("%-12s %-28s %-22s %-10s%n", "ID", "Title", "Department", "Status");
-        System.out.println("----------------------------------------------------------------------------");
-        boolean found = false;
-        for (JobOpening jobOpening : jobOpenings) {
-            if (jobOpening.isAvailable()) {
-                System.out.printf("%-12s %-28s %-22s %-10s%n",
-                    jobOpening.getJobOpeningId(),
-                    jobOpening.getJobTitle(),
-                    jobOpening.getDepartmentName(),
-                    jobOpening.getOpeningStatus());
-                found = true;
-            }
-        }
-        if (!found) {
-            System.out.println("No available job openings found.");
         }
     }
 
@@ -174,58 +66,78 @@ public class SchedulingUI {
         try {
             employees = employeeFileHandler.readAllEmployees();
         } catch (Exception e) {
-            System.out.println("Could not load employees.");
+            System.out.println(ANSI_RED + "  Could not load employees." + ANSI_RESET);
+            router.pause();
             return;
         }
 
         if (employees.isEmpty()) {
-            System.out.println("No employees found.");
+            System.out.println("  No employees found.");
+            router.pause();
             return;
         }
 
-        System.out.println();
-        System.out.println("Select Employee");
+        router.clearScreen();
+        router.printBanner();
+        System.out.println(ANSI_BOLD + "  Select Employee" + ANSI_RESET);
+        System.out.println("  " + "-".repeat(50));
+        System.out.printf("  %-4s %-25s %-20s%n", "No.", "Name", "Department");
+        System.out.println("  " + "-".repeat(50));
         for (int i = 0; i < employees.size(); i++) {
             Employee employee = employees.get(i);
-            System.out.println((i + 1) + ". " + employee.getEmployeeName()
-                + " - " + employee.getDepartmentName());
+            System.out.printf("  %-4s %-25s %-20s%n",
+                (i + 1) + ".",
+                employee.getEmployeeName(),
+                employee.getDepartmentName());
         }
-        System.out.println("C. Cancel");
+        System.out.println("  " + (employees.size() + 1) + ". Cancel");
+        System.out.println("  " + "-".repeat(50));
+        System.out.print("  Select an employee: ");
 
-        String choice = readLine("Select an employee: ");
-        if (isCancel(choice)) return;
-
+        String choice = scanner.nextLine().trim();
         try {
             int index = Integer.parseInt(choice) - 1;
+            if (index == employees.size()) return;
             if (index < 0 || index >= employees.size()) {
-                System.out.println("Invalid employee selection.");
+                System.out.println(ANSI_RED + "  Invalid selection." + ANSI_RESET);
+                router.pause();
                 return;
             }
             showScheduleForm(employees.get(index));
         } catch (NumberFormatException e) {
-            System.out.println("Invalid employee selection.");
+            System.out.println(ANSI_RED + "  Invalid selection." + ANSI_RESET);
+            router.pause();
         }
     }
 
     private void showScheduleForm(Employee employee) {
         boolean entering = true;
         while (entering) {
-            System.out.println();
-            System.out.println("Scheduling: " + employee.getEmployeeName());
-            System.out.println("Enter C at any prompt to cancel.");
+            router.clearScreen();
+            router.printBanner();
+            System.out.println(ANSI_BOLD + "  Scheduling: " + employee.getEmployeeName() + ANSI_RESET);
+            System.out.println("  " + "-".repeat(34));
+            System.out.println("  Enter C at any prompt to cancel.");
+            System.out.println("  " + "-".repeat(34));
 
-            String date = readLine("Date (MM/dd/yyyy): ");
+            String date = readLine("  Date (MM/dd/yyyy): ");
             if (isCancel(date)) return;
 
-            String start = readLine("Start Time (HH:mm): ");
+            String start = readLine("  Start Time (HH:mm): ");
             if (isCancel(start)) return;
 
-            String end = readLine("End Time (HH:mm): ");
+            String end = readLine("  End Time (HH:mm): ");
             if (isCancel(end)) return;
 
             String result = schedulingController.manageEmployeeSchedule(
                 employee.getEmployeeId(), date, start, end);
-            System.out.println(result);
+
+            if (result.contains("successfully")) {
+                System.out.println(ANSI_GREEN + "  " + result + ANSI_RESET);
+            } else {
+                System.out.println(ANSI_RED + "  " + result + ANSI_RESET);
+            }
+            router.pause();
 
             if (result.contains("successfully")
                     || result.equals("Employee does not exist.")
@@ -236,31 +148,38 @@ public class SchedulingUI {
     }
 
     private void showViewSchedules() {
+        router.clearScreen();
+        router.printBanner();
         List<EmployeeSchedule> schedules;
         try {
             schedules = scheduleFileHandler.readAllSchedules();
         } catch (Exception e) {
-            System.out.println("Could not load schedules.");
+            System.out.println(ANSI_RED + "  Could not load schedules." + ANSI_RESET);
+            router.pause();
             return;
         }
 
         if (schedules.isEmpty()) {
-            System.out.println("No schedules found.");
+            System.out.println("  No schedules found.");
+            router.pause();
             return;
         }
 
-        System.out.println();
-        System.out.printf("%-20s %-22s %-12s %-10s %-10s%n",
+        System.out.println(ANSI_BOLD + "  Employee Schedules" + ANSI_RESET);
+        System.out.println("  " + "-".repeat(74));
+        System.out.printf("  %-20s %-22s %-12s %-10s %-10s%n",
             "Employee", "Department", "Date", "Start", "End");
-        System.out.println("----------------------------------------------------------------------------");
+        System.out.println("  " + "-".repeat(74));
         for (EmployeeSchedule schedule : schedules) {
-            System.out.printf("%-20s %-22s %-12s %-10s %-10s%n",
+            System.out.printf("  %-20s %-22s %-12s %-10s %-10s%n",
                 schedule.getEmployeeName(),
                 schedule.getDepartmentName(),
                 schedule.getScheduleDate(),
                 to12Hour(schedule.getStartTime()),
                 to12Hour(schedule.getEndTime()));
         }
+        System.out.println("  " + "-".repeat(74));
+        router.pause();
     }
 
     private String readLine(String prompt) {
@@ -280,9 +199,5 @@ public class SchedulingUI {
         if (hour == 0) hour = 12;
         else if (hour > 12) hour -= 12;
         return String.format("%d:%02d %s", hour, min, amPm);
-    }
-
-    public static void main(String[] args) {
-        new SchedulingUI().showSchedulingMenu();
     }
 }

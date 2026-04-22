@@ -1,10 +1,10 @@
-R001,Superman,CLOSED,Magic Mountain
-R002,Goliath,OPEN,Magic Mountain
-R003,Iron Rattler,OPEN,Fiesta Texas
-R004,Scream,CLOSED,Fiesta Texas
-R005,Gold Striker,OPEN,Great America
-R006,Drop Tower,CLOSED,Great America
-R007,Mindbender,OPEN,Over Georgia
-R008,Batman,MAINTENANCE,Over Georgia
-R009,Comet,MAINTENANCE,Great Escape
-R010,Canyon Blaster,MAINTENANCE,Great Escape
+R001,Superman,OPEN,Magic Mountain,40
+R002,Goliath,OPEN,Magic Mountain,0
+R003,Iron Rattler,OPEN,Fiesta Texas,0
+R004,Scream,CLOSED,Fiesta Texas,0
+R005,Gold Striker,OPEN,Great America,0
+R006,Drop Tower,CLOSED,Great America,0
+R007,Mindbender,OPEN,Over Georgia,0
+R008,Batman,MAINTENANCE,Over Georgia,0
+R009,Comet,MAINTENANCE,Great Escape,0
+R010,Canyon Blaster,MAINTENANCE,Great Escape,0

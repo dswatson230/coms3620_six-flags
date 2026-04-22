@@ -1,0 +1,4 @@
+I001|Complaint|Guest reported long wait times at Superman ride.|Open|
+I002|Incident|Guest slipped near food court entrance.|Open|
+I003|PR Case|Guest left negative review on social media about ride closure.|Open|
+I004|Complaint|Guest unhappy with food quality at Fiesta Texas.|Open|
