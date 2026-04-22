@@ -1,5 +1,5 @@
-General Admission,39.99,0,MAGIC_MOUNTAIN
-Gold Pass,89.99,-1,MAGIC_MOUNTAIN
-Burger Combo,9.99,5,MAGIC_MOUNTAIN
-General Admission,39.99,4,FIESTA_TEXAS
+General Admission,39.99,13,MAGIC_MOUNTAIN
+Gold Pass,89.99,6,MAGIC_MOUNTAIN
+Burger Combo,9.99,2,MAGIC_MOUNTAIN
+General Admission,39.99,5,FIESTA_TEXAS
 Popcorn,4.49,0,FIESTA_TEXAS
