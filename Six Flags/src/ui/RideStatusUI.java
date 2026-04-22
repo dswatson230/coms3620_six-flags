@@ -3,116 +3,143 @@ package ui;
 import controllers.RideStatusController;
 import models.Ride;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.List;
+import java.util.Scanner;
 
 public class RideStatusUI {
-    private final JFrame frame;
-    private final UserInterface router;
+    private final UserInterface        router;
+    private final Scanner              scanner;
     private final RideStatusController controller;
+
+    private static final String ANSI_BOLD  = "\u001B[1m";
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_RED   = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
 
     private static final String[] STATUSES = {"OPEN", "CLOSED", "MAINTENANCE"};
 
-    public RideStatusUI(JFrame frame, UserInterface router) {
-        this.frame      = frame;
+    public RideStatusUI(UserInterface router, Scanner scanner) {
         this.router     = router;
+        this.scanner    = scanner;
         this.controller = new RideStatusController();
     }
 
     public void showRideMenu() {
-        JPanel panel = new JPanel(new GridLayout(3, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(40, 80, 40, 80));
-        JLabel label = new JLabel("Ride Status Management", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 18));
-        JButton updateBtn = new JButton("Update Ride Status");
-        JButton backBtn   = new JButton("Back");
-        updateBtn.addActionListener(e -> showRideSelection());
-        backBtn.addActionListener(e   -> router.showMainMenu());
-        panel.add(label); panel.add(updateBtn); panel.add(backBtn);
-        router.setPanel(panel);
+        boolean running = true;
+        while (running) {
+            router.clearScreen();
+            router.printBanner();
+            System.out.println(ANSI_BOLD + "  Ride Status Management" + ANSI_RESET);
+            System.out.println("  " + "-".repeat(34));
+            System.out.println("  1. Update Ride Status");
+            System.out.println("  2. Back");
+            System.out.println("  " + "-".repeat(34));
+            System.out.print("  Select an option: ");
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1": showRideSelection(); break;
+                case "2": running = false;     break;
+                default:
+                    System.out.println(ANSI_RED + "  Invalid option." + ANSI_RESET);
+                    router.pause();
+            }
+        }
     }
 
     private void showRideSelection() {
-        List<Ride> rides = controller.loadRides();
+        boolean running = true;
+        while (running) {
+            router.clearScreen();
+            router.printBanner();
+            List<Ride> rides = controller.loadRides();
 
-        JPanel panel = new JPanel(new GridLayout(rides.size() + 2, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 60, 20, 60));
-        JLabel label = new JLabel("Select a Ride:", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 16));
-        panel.add(label);
+            if (rides.isEmpty()) {
+                System.out.println(ANSI_RED + "  No rides found." + ANSI_RESET);
+                router.pause();
+                return;
+            }
 
-        if (rides.isEmpty()) {
-            panel.add(new JLabel("No rides found in data/rides.txt.", SwingConstants.CENTER));
-        } else {
-            for (Ride ride : rides) {
-                JButton btn = new JButton(ride.getName() + " — " + ride.getLocation() + " [" + ride.getStatus() + "]");
-                btn.addActionListener(e -> showUpdateForm(ride));
-                panel.add(btn);
+            System.out.println(ANSI_BOLD + "  Select a Ride" + ANSI_RESET);
+            System.out.println("  " + "-".repeat(60));
+            System.out.printf("  %-4s %-20s %-20s %-12s%n", "No.", "Name", "Location", "Status");
+            System.out.println("  " + "-".repeat(60));
+            for (int i = 0; i < rides.size(); i++) {
+                Ride ride = rides.get(i);
+                System.out.printf("  %-4s %-20s %-20s %-12s%n",
+                    (i + 1) + ".",
+                    ride.getName(),
+                    ride.getLocation(),
+                    ride.getStatus());
+            }
+            System.out.println("  " + (rides.size() + 1) + ". Back");
+            System.out.println("  " + "-".repeat(60));
+            System.out.print("  Select a ride: ");
+
+            String choice = scanner.nextLine().trim();
+            int selection;
+            try {
+                selection = Integer.parseInt(choice);
+            } catch (NumberFormatException e) {
+                System.out.println(ANSI_RED + "  Invalid input." + ANSI_RESET);
+                router.pause();
+                continue;
+            }
+
+            if (selection == rides.size() + 1) {
+                running = false;
+            } else if (selection >= 1 && selection <= rides.size()) {
+                showUpdateForm(rides.get(selection - 1));
+            } else {
+                System.out.println(ANSI_RED + "  Invalid selection." + ANSI_RESET);
+                router.pause();
             }
         }
-
-        JButton back = new JButton("Back");
-        back.addActionListener(e -> showRideMenu());
-        panel.add(back);
-        router.setPanel(panel);
     }
 
     private void showUpdateForm(Ride ride) {
-        JPanel panel = new JPanel();
-        panel.setLayout(new BoxLayout(panel, BoxLayout.Y_AXIS));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 40, 20, 40));
+        router.clearScreen();
+        router.printBanner();
+        System.out.println(ANSI_BOLD + "  Update Ride: " + ride.getName() + ANSI_RESET);
+        System.out.println("  " + "-".repeat(34));
+        System.out.println("  Current Status: " + ride.getStatus());
+        System.out.println();
+        System.out.println("  New Status:");
+        for (int i = 0; i < STATUSES.length; i++) {
+            System.out.println("  " + (i + 1) + ". " + STATUSES[i]);
+        }
+        System.out.println("  " + (STATUSES.length + 1) + ". Cancel");
+        System.out.println("  " + "-".repeat(34));
+        System.out.print("  Select new status: ");
 
-        JLabel title = new JLabel("Update: " + ride.getName(), SwingConstants.CENTER);
-        title.setFont(new Font("Arial", Font.BOLD, 16));
-        title.setAlignmentX(Component.CENTER_ALIGNMENT);
+        String choice = scanner.nextLine().trim();
+        int selection;
+        try {
+            selection = Integer.parseInt(choice);
+        } catch (NumberFormatException e) {
+            System.out.println(ANSI_RED + "  Invalid input." + ANSI_RESET);
+            router.pause();
+            return;
+        }
 
-        JLabel currentLabel = new JLabel("Current Status: " + ride.getStatus());
-        currentLabel.setAlignmentX(Component.CENTER_ALIGNMENT);
+        if (selection == STATUSES.length + 1) return;
 
-        // Status dropdown
-        JPanel statusRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        statusRow.add(new JLabel("New Status:"));
-        JComboBox<String> statusBox = new JComboBox<>(STATUSES);
-        statusBox.setSelectedItem(ride.getStatus());
-        statusRow.add(statusBox);
+        if (selection < 1 || selection > STATUSES.length) {
+            System.out.println(ANSI_RED + "  Invalid selection." + ANSI_RESET);
+            router.pause();
+            return;
+        }
 
-        // Reason input
-        JPanel reasonRow = new JPanel(new FlowLayout(FlowLayout.LEFT));
-        reasonRow.add(new JLabel("Reason:     "));
-        JTextField reasonField = new JTextField(20);
-        reasonRow.add(reasonField);
+        String newStatus = STATUSES[selection - 1];
+        System.out.print("  Enter reason: ");
+        String reason = scanner.nextLine().trim();
 
-        // Buttons
-        JButton submitBtn = new JButton("Submit");
-        JButton backBtn   = new JButton("Back");
-        JPanel btnRow = new JPanel(new FlowLayout(FlowLayout.CENTER, 10, 0));
-        btnRow.add(backBtn); btnRow.add(submitBtn);
-
-        panel.add(title);
-        panel.add(Box.createVerticalStrut(8));
-        panel.add(currentLabel);
-        panel.add(Box.createVerticalStrut(12));
-        panel.add(statusRow);
-        panel.add(reasonRow);
-        panel.add(Box.createVerticalStrut(15));
-        panel.add(btnRow);
-
-        submitBtn.addActionListener(e -> {
-            String newStatus = (String) statusBox.getSelectedItem();
-            String reason    = reasonField.getText().trim();
-            String error     = controller.updateRideStatus(ride.getRideID(), newStatus, reason);
-            if (error != null) {
-                JOptionPane.showMessageDialog(frame, error, "Error", JOptionPane.ERROR_MESSAGE);
-            } else {
-                JOptionPane.showMessageDialog(frame,
-                    ride.getName() + " status updated to " + newStatus + ".",
-                    "Update Confirmed", JOptionPane.INFORMATION_MESSAGE);
-                showRideSelection();
-            }
-        });
-        backBtn.addActionListener(e -> showRideSelection());
-
-        router.setPanel(panel);
+        String error = controller.updateRideStatus(ride.getRideID(), newStatus, reason);
+        if (error != null) {
+            System.out.println(ANSI_RED + "  Error: " + error + ANSI_RESET);
+        } else {
+            System.out.println(ANSI_GREEN + "  " + ride.getName() + " updated to " + newStatus + "." + ANSI_RESET);
+        }
+        router.pause();
     }
 }

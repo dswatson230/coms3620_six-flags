@@ -1,177 +1,192 @@
 package ui;
- 
+
 import controllers.ItemController;
 import interfaces.Location;
 import models.Item;
- 
-import javax.swing.*;
-import java.awt.*;
+
 import java.util.ArrayList;
- 
+import java.util.Scanner;
+
 public class InventoryUI {
-    private JFrame frame;
-    private ItemController controller;
-    private UserInterface router;
- 
+    private final ItemController controller;
+    private final UserInterface  router;
+    private final Scanner        scanner;
+
+    private static final String ANSI_BOLD  = "\u001B[1m";
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_RED   = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+
     private static final String[] LOCATION_NAMES = {
         "Magic Mountain", "Fiesta Texas", "Great America",
         "Over Georgia", "The Great Escape"
     };
- 
-    public InventoryUI(JFrame frame, ItemController controller, UserInterface router) {
-        this.frame      = frame;
+
+    public InventoryUI(ItemController controller, UserInterface router, Scanner scanner) {
         this.controller = controller;
         this.router     = router;
+        this.scanner    = scanner;
     }
- 
+
     public void showInventoryMenu() {
-        JPanel panel = new JPanel(new GridLayout(4, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(40, 80, 40, 80));
- 
-        JLabel label = new JLabel("Inventory Management", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 18));
- 
-        JButton addBtn  = new JButton("Add Item");
-        JButton viewBtn = new JButton("View Inventory");
-        JButton backBtn = new JButton("Back");
- 
-        addBtn.addActionListener(e  -> showLocationSelection());
-        viewBtn.addActionListener(e -> showViewInventory());
-        backBtn.addActionListener(e -> router.showMainMenu());
- 
-        panel.add(label);
-        panel.add(addBtn);
-        panel.add(viewBtn);
-        panel.add(backBtn);
- 
-        router.setPanel(panel);
+        boolean running = true;
+        while (running) {
+            router.clearScreen();
+            router.printBanner();
+            System.out.println(ANSI_BOLD + "  Inventory Management" + ANSI_RESET);
+            System.out.println("  " + "-".repeat(34));
+            System.out.println("  1. Add Item");
+            System.out.println("  2. View Inventory");
+            System.out.println("  3. Back");
+            System.out.println("  " + "-".repeat(34));
+            System.out.print("  Select an option: ");
+
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1": showLocationSelection(); break;
+                case "2": showViewInventory();     break;
+                case "3": running = false;         break;
+                default:
+                    System.out.println(ANSI_RED + "  Invalid option." + ANSI_RESET);
+                    router.pause();
+            }
+        }
     }
- 
+
     private void showViewInventory() {
+        router.clearScreen();
+        router.printBanner();
         ArrayList<Item> allItems = controller.getAllItems();
- 
-        JPanel outer = new JPanel(new BorderLayout());
- 
-        JLabel label = new JLabel("Current Inventory", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 16));
-        label.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        outer.add(label, BorderLayout.NORTH);
- 
-        String[] columns = { "Name", "Price", "Quantity", "Location" };
-        Object[][] data = new Object[allItems.size()][4];
-        for (int i = 0; i < allItems.size(); i++) {
-            Item item = allItems.get(i);
-            data[i][0] = item.getName();
-            data[i][1] = String.format("$%.2f", item.getPrice());
-            data[i][2] = item.getQuantity();
-            data[i][3] = item.getLocation().name().replace("_", " ");
+        System.out.println(ANSI_BOLD + "  Current Inventory" + ANSI_RESET);
+        System.out.println("  " + "-".repeat(70));
+        System.out.printf("  %-25s %-10s %-10s %-20s%n", "Name", "Price", "Qty", "Location");
+        System.out.println("  " + "-".repeat(70));
+        if (allItems.isEmpty()) {
+            System.out.println("  No items in inventory.");
+        } else {
+            for (Item item : allItems) {
+                System.out.printf("  %-25s %-10s %-10s %-20s%n",
+                    item.getName(),
+                    String.format("$%.2f", item.getPrice()),
+                    item.getQuantity(),
+                    item.getLocation().name().replace("_", " "));
+            }
         }
- 
-        JTable table = new JTable(data, columns) {
-            @Override
-            public boolean isCellEditable(int row, int col) { return false; }
-        };
-        table.setFillsViewportHeight(true);
-        table.getTableHeader().setReorderingAllowed(false);
- 
-        JScrollPane scroll = new JScrollPane(table);
-        outer.add(scroll, BorderLayout.CENTER);
- 
-        JButton backBtn = new JButton("Back");
-        backBtn.addActionListener(e -> showInventoryMenu());
-        JPanel south = new JPanel();
-        south.add(backBtn);
-        outer.add(south, BorderLayout.SOUTH);
- 
-        router.setContentPane(outer);
+        System.out.println("  " + "-".repeat(70));
+        router.pause();
     }
- 
+
     private void showLocationSelection() {
-        JPanel panel = new JPanel(new GridLayout(7, 1, 10, 10));
-        panel.setBorder(BorderFactory.createEmptyBorder(20, 60, 20, 60));
- 
-        JLabel label = new JLabel("Select a Location:", SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 16));
-        panel.add(label);
- 
         Location[] locations = Location.values();
-        for (int i = 0; i < locations.length; i++) {
-            JButton btn = new JButton(LOCATION_NAMES[i]);
-            Location loc = locations[i];
-            btn.addActionListener(e -> showItemTemplates(loc));
-            panel.add(btn);
+        boolean running = true;
+        while (running) {
+            router.clearScreen();
+            router.printBanner();
+            System.out.println(ANSI_BOLD + "  Add Item -- Select Location" + ANSI_RESET);
+            System.out.println("  " + "-".repeat(34));
+            for (int i = 0; i < locations.length; i++) {
+                System.out.println("  " + (i + 1) + ". " + LOCATION_NAMES[i]);
+            }
+            System.out.println("  " + (locations.length + 1) + ". Back");
+            System.out.println("  " + "-".repeat(34));
+            System.out.print("  Select a location: ");
+
+            String choice = scanner.nextLine().trim();
+            int selection;
+            try {
+                selection = Integer.parseInt(choice);
+            } catch (NumberFormatException e) {
+                System.out.println(ANSI_RED + "  Invalid input." + ANSI_RESET);
+                router.pause();
+                continue;
+            }
+
+            if (selection == locations.length + 1) {
+                running = false;
+            } else if (selection >= 1 && selection <= locations.length) {
+                showItemTemplates(locations[selection - 1]);
+            } else {
+                System.out.println(ANSI_RED + "  Invalid selection." + ANSI_RESET);
+                router.pause();
+            }
         }
- 
-        JButton backBtn = new JButton("Back");
-        backBtn.addActionListener(e -> showInventoryMenu());
-        panel.add(backBtn);
- 
-        router.setPanel(panel);
     }
- 
+
     private void showItemTemplates(Location location) {
-        Object[][] templates = controller.getItemTemplates();
- 
-        JPanel outer = new JPanel(new BorderLayout());
- 
-        JLabel label = new JLabel(
-            "Select Item to Add at " + location.name().replace("_", " ") + ":",
-            SwingConstants.CENTER);
-        label.setFont(new Font("Arial", Font.BOLD, 16));
-        label.setBorder(BorderFactory.createEmptyBorder(10, 0, 10, 0));
-        outer.add(label, BorderLayout.NORTH);
- 
-        JPanel btnPanel = new JPanel(new GridLayout(0, 2, 8, 8));
-        btnPanel.setBorder(BorderFactory.createEmptyBorder(5, 20, 5, 20));
- 
-        for (Object[] template : templates) {
-            String name    = (String) template[0];
-            double price   = (double) template[1];
-            int currentQty = controller.getQuantityFor(name, location);
- 
-            JButton btn = new JButton(name + " ($" + price + ") — In Stock: " + currentQty);
-            btn.addActionListener(e -> showQuantityInput(name, price, location, currentQty));
-            btnPanel.add(btn);
+        boolean running = true;
+        while (running) {
+            router.clearScreen();
+            router.printBanner();
+            Object[][] templates = controller.getItemTemplates();
+            System.out.println(ANSI_BOLD + "  Add Item at " + location.name().replace("_", " ") + ANSI_RESET);
+            System.out.println("  " + "-".repeat(55));
+            System.out.printf("  %-4s %-25s %-10s %-10s%n", "No.", "Name", "Price", "In Stock");
+            System.out.println("  " + "-".repeat(55));
+            for (int i = 0; i < templates.length; i++) {
+                String name  = (String) templates[i][0];
+                double price = (double) templates[i][1];
+                int qty      = controller.getQuantityFor(name, location);
+                System.out.printf("  %-4s %-25s %-10s %-10s%n",
+                    (i + 1) + ".",
+                    name,
+                    String.format("$%.2f", price),
+                    qty);
+            }
+            System.out.println("  " + (templates.length + 1) + ". Back");
+            System.out.println("  " + "-".repeat(55));
+            System.out.print("  Select an item: ");
+
+            String choice = scanner.nextLine().trim();
+            int selection;
+            try {
+                selection = Integer.parseInt(choice);
+            } catch (NumberFormatException e) {
+                System.out.println(ANSI_RED + "  Invalid input." + ANSI_RESET);
+                router.pause();
+                continue;
+            }
+
+            if (selection == templates.length + 1) {
+                running = false;
+            } else if (selection >= 1 && selection <= templates.length) {
+                String name  = (String) templates[selection - 1][0];
+                double price = (double) templates[selection - 1][1];
+                int currentQty = controller.getQuantityFor(name, location);
+                showQuantityInput(name, price, location, currentQty);
+            } else {
+                System.out.println(ANSI_RED + "  Invalid selection." + ANSI_RESET);
+                router.pause();
+            }
         }
- 
-        JScrollPane scroll = new JScrollPane(btnPanel);
-        scroll.setBorder(null);
-        outer.add(scroll, BorderLayout.CENTER);
- 
-        JButton backBtn = new JButton("Back");
-        backBtn.addActionListener(e -> showLocationSelection());
-        JPanel south = new JPanel();
-        south.add(backBtn);
-        outer.add(south, BorderLayout.SOUTH);
- 
-        router.setContentPane(outer);
     }
- 
+
     private void showQuantityInput(String name, double price, Location location, int currentQty) {
-        String quantityInput = JOptionPane.showInputDialog(frame,
-            name + "\nCurrent stock: " + currentQty + "\n\nEnter quantity to add:");
-        if (quantityInput == null) return;
- 
+        router.clearScreen();
+        router.printBanner();
+        System.out.println(ANSI_BOLD + "  Add Stock" + ANSI_RESET);
+        System.out.println("  " + "-".repeat(34));
+        System.out.println("  Item:          " + name);
+        System.out.println("  Current Stock: " + currentQty);
+        System.out.println("  " + "-".repeat(34));
+        System.out.print("  Enter quantity to add (0 to cancel): ");
+        String input = scanner.nextLine().trim();
         int amount;
         try {
-            amount = Integer.parseInt(quantityInput.trim());
-            if (amount <= 0) {
-                JOptionPane.showMessageDialog(frame, "Quantity must be greater than zero.",
-                    "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            amount = Integer.parseInt(input);
+            if (amount == 0) return;
+            if (amount < 0) {
+                System.out.println(ANSI_RED + "  Quantity must be greater than zero." + ANSI_RESET);
+                router.pause();
                 return;
             }
         } catch (NumberFormatException e) {
-            JOptionPane.showMessageDialog(frame, "Please enter a valid number.",
-                "Invalid Input", JOptionPane.ERROR_MESSAGE);
+            System.out.println(ANSI_RED + "  Invalid number." + ANSI_RESET);
+            router.pause();
             return;
         }
- 
+
         int newTotal = controller.increaseQuantity(name, price, location, amount);
- 
-        JOptionPane.showMessageDialog(frame,
-            "✓ " + name + " updated!\nAdded: " + amount + "\nNew total stock: " + newTotal,
-            "Inventory Updated", JOptionPane.INFORMATION_MESSAGE);
- 
-        showItemTemplates(location);
+        System.out.println(ANSI_GREEN + "  " + name + " updated! Added: " + amount + " | New total: " + newTotal + ANSI_RESET);
+        router.pause();
     }
 }

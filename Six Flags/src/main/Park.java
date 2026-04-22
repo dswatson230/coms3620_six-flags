@@ -1,11 +1,10 @@
 package main;
 
 import interfaces.ParkInterface;
-import ui.SchedulingUI;
 import ui.UserInterface;
 
 public class Park implements ParkInterface {
-    private UserInterface ui;
+    private final UserInterface ui;
 
     public Park() {
         this.ui = new UserInterface();

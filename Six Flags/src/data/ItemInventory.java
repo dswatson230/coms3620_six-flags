@@ -27,6 +27,7 @@ public class ItemInventory implements ItemInventoryInterface {
     }
  
     public ArrayList<Item> getAllItems() {
+        this.inventory = fileHandler.readItems();
         return inventory;
     }
  

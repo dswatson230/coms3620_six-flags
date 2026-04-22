@@ -4,176 +4,234 @@ import controllers.ItemController;
 import interfaces.Location;
 import models.Item;
 
-import javax.swing.*;
-import java.awt.*;
 import java.util.ArrayList;
 import java.util.Scanner;
 
 public class PurchaseUI {
-    private ItemController controller;
-    private UserInterface router;
-    private Scanner sc;
+    private final ItemController controller;
+    private final UserInterface  router;
+    private final Scanner        scanner;
 
-    public PurchaseUI(ItemController controller, UserInterface router) {
+    private static final String ANSI_BOLD  = "\u001B[1m";
+    private static final String ANSI_RESET = "\u001B[0m";
+    private static final String ANSI_RED   = "\u001B[31m";
+    private static final String ANSI_GREEN = "\u001B[32m";
+
+    public PurchaseUI(ItemController controller, UserInterface router, Scanner scanner) {
         this.controller = controller;
-        this.router = router;
-        sc = new Scanner(System.in);
+        this.router     = router;
+        this.scanner    = scanner;
     }
 
     public void showLocationSelection() {
-        System.out.println();
-
         Location[] locations = Location.values();
-        for (int i = 0; i < locations.length; i++) {
-            System.out.println(i+1 + ". " + locations[i]);
-        }
-        System.out.println(locations.length + 1 + ". Back\n");
-
-        int selection = 0;
-        boolean selected = false;
-        while (!selected) {
-            System.out.print("Select a Location: ");
-            selection = sc.nextInt();
-            if (selection >= 1 && selection <= locations.length + 1) {
-                selected = true;
+        boolean running = true;
+        while (running) {
+            router.clearScreen();
+            router.printBanner();
+            System.out.println(ANSI_BOLD + "  Purchase -- Select Location" + ANSI_RESET);
+            System.out.println("  " + "-".repeat(34));
+            for (int i = 0; i < locations.length; i++) {
+                System.out.println("  " + (i + 1) + ". " + locations[i].name().replace("_", " "));
             }
-            else {
-                System.out.println("Invalid Input, Please Try Again");
-            }
-        }
+            System.out.println("  " + (locations.length + 1) + ". Back");
+            System.out.println("  " + "-".repeat(34));
+            System.out.print("  Select a location: ");
 
-        if (selection == locations.length+1) {
-            router.showMainMenu();
-        }
-        else {
-            showItemSelection(locations[selection - 1]);
+            String choice = scanner.nextLine().trim();
+            int selection;
+            try {
+                selection = Integer.parseInt(choice);
+            } catch (NumberFormatException e) {
+                System.out.println(ANSI_RED + "  Invalid input." + ANSI_RESET);
+                router.pause();
+                continue;
+            }
+
+            if (selection == locations.length + 1) {
+                running = false;
+            } else if (selection >= 1 && selection <= locations.length) {
+                showItemSelection(locations[selection - 1]);
+            } else {
+                System.out.println(ANSI_RED + "  Invalid selection." + ANSI_RESET);
+                router.pause();
+            }
         }
     }
 
     private void showItemSelection(Location location) {
-        System.out.println();
-        sc.nextLine();
-
-        ArrayList<Item> items = controller.getAvailableItemsByLocation(location);
-
-        if (items.isEmpty()) {
-            System.out.println("No items available at this location.");
-        } else {
-            for (Item item : items) {
-                System.out.println(items.indexOf(item)+1 + ". " + item.getName() + " - $" + item.getPrice() +
-                                          " (Qty: " + item.getQuantity() + ")");
+        boolean running = true;
+        while (running) {
+            router.clearScreen();
+            router.printBanner();
+            ArrayList<Item> items = controller.getAvailableItemsByLocation(location);
+            System.out.println(ANSI_BOLD + "  Items at " + location.name().replace("_", " ") + ANSI_RESET);
+            System.out.println("  " + "-".repeat(50));
+            if (items.isEmpty()) {
+                System.out.println("  No items available at this location.");
+                System.out.println("  " + "-".repeat(50));
+                router.pause();
+                return;
             }
-        }
-        System.out.println(items.size() + 1 + ". Back\n");
-
-        int selection = 0;
-        boolean selected = false;
-        while (!selected) {
-            System.out.print("Selection: ");
-            selection = sc.nextInt();
-            if (selection >= 1 && selection <= items.size() + 1) {
-                selected = true;
+            System.out.printf("  %-4s %-25s %-10s %-6s%n", "No.", "Name", "Price", "Qty");
+            System.out.println("  " + "-".repeat(50));
+            for (int i = 0; i < items.size(); i++) {
+                Item item = items.get(i);
+                System.out.printf("  %-4s %-25s %-10s %-6s%n",
+                    (i + 1) + ".",
+                    item.getName(),
+                    String.format("$%.2f", item.getPrice()),
+                    item.getQuantity());
             }
-            else {
-                System.out.println("Invalid Input, Please Try Again");
-            }
-        }
+            System.out.println("  " + (items.size() + 1) + ". Back");
+            System.out.println("  " + "-".repeat(50));
+            System.out.print("  Select an item: ");
 
-        if (selection == items.size()+1) {
-            showLocationSelection();
-        }
-        else {
-            showQuantityInput(items.get(selection-1));
+            String choice = scanner.nextLine().trim();
+            int selection;
+            try {
+                selection = Integer.parseInt(choice);
+            } catch (NumberFormatException e) {
+                System.out.println(ANSI_RED + "  Invalid input." + ANSI_RESET);
+                router.pause();
+                continue;
+            }
+
+            if (selection == items.size() + 1) {
+                running = false;
+            } else if (selection >= 1 && selection <= items.size()) {
+                showQuantityInput(items.get(selection - 1));
+            } else {
+                System.out.println(ANSI_RED + "  Invalid selection." + ANSI_RESET);
+                router.pause();
+            }
         }
     }
 
-
     private void showQuantityInput(Item item) {
-        System.out.println();
-        sc.nextLine();
+        boolean entering = true;
+        while (entering) {
+            router.clearScreen();
+            router.printBanner();
+            System.out.println(ANSI_BOLD + "  Add to Cart" + ANSI_RESET);
+            System.out.println("  " + "-".repeat(34));
+            System.out.println("  Item:      " + item.getName());
+            System.out.println("  Price:     $" + String.format("%.2f", item.getPrice()));
+            System.out.println("  Available: " + item.getQuantity());
+            System.out.println("  " + "-".repeat(34));
+            System.out.print("  Enter quantity (0 to cancel): ");
 
-        System.out.print("Enter Desired Quantity: ");
-        String quantityInput = sc.nextLine();
+            String input = scanner.nextLine().trim();
+            int quantity;
+            try {
+                quantity = Integer.parseInt(input);
+                if (quantity == 0) return;
+                if (quantity < 0) {
+                    System.out.println(ANSI_RED + "  Quantity must be positive." + ANSI_RESET);
+                    router.pause();
+                    continue;
+                }
+            } catch (NumberFormatException e) {
+                System.out.println(ANSI_RED + "  Invalid number." + ANSI_RESET);
+                router.pause();
+                continue;
+            }
 
-        int quantity = 0;
-        try {
-            quantity = Integer.parseInt(quantityInput.trim());
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid quantity");
-            showQuantityInput(item);
+            String error = controller.addToCart(item, quantity);
+            if (error != null) {
+                System.out.println(ANSI_RED + "  Error: " + error + ANSI_RESET);
+                router.pause();
+            } else {
+                System.out.println(ANSI_GREEN + "  Added to cart." + ANSI_RESET);
+                entering = false;
+                showCartMenu();
+            }
         }
-
-        String error = controller.addToCart(item, quantity);
-        if (error != null) {
-            System.out.println("Error: " + error);
-            showQuantityInput(item);
-        }
-        showCartMenu();
     }
 
     public void showCartMenu() {
-        System.out.println();
+        boolean running = true;
+        while (running) {
+            router.clearScreen();
+            router.printBanner();
+            System.out.println(ANSI_BOLD + "  Cart" + ANSI_RESET);
+            System.out.println("  " + "-".repeat(50));
+            for (String line : controller.getCartInfo().split("\n")) {
+                System.out.println("  " + line);
+            }
+            System.out.println("  " + "-".repeat(50));
+            System.out.printf("  %-30s $%.2f%n", "Total:", controller.calculateTotal());
+            System.out.println("  " + "-".repeat(50));
+            System.out.println("  1. Continue Shopping");
+            System.out.println("  2. Remove Item");
+            System.out.println("  3. Checkout");
+            System.out.println("  4. Back to Main");
+            System.out.println("  " + "-".repeat(50));
+            System.out.print("  Select an option: ");
 
-        System.out.println(controller.getCartInfo());
-
-        System.out.println("ACTIONS:");
-        System.out.println("1. Continue Shopping");
-        System.out.println("2. Remove Item");
-        System.out.println("3. Checkout");
-        System.out.println("4. Back to Main");
-
-        int selection = 0;
-        boolean selected = false;
-        while (!selected) {
-            System.out.print("Select Action: ");
-            selection = sc.nextInt();
-            selected = true;
-            switch (selection) {
-                case 1: showLocationSelection(); break;
-                case 2: showRemoveItem(); break;
-                case 3: showCheckout(); break;
-                case 4: router.showMainMenu(); break;
-                default: {
-                    System.out.println("Invalid Input, Please Try Again");
-                    selected = false;
-                }
+            String choice = scanner.nextLine().trim();
+            switch (choice) {
+                case "1": showLocationSelection(); running = false; break;
+                case "2": showRemoveItem();                        break;
+                case "3": showCheckout();          running = false; break;
+                case "4":                          running = false; break;
+                default:
+                    System.out.println(ANSI_RED + "  Invalid option." + ANSI_RESET);
+                    router.pause();
             }
         }
     }
 
     private void showRemoveItem() {
-        System.out.println();
-        sc.nextLine();
-
-        System.out.println(controller.getCartInfo());
-        System.out.print("Enter item number to remove:\n");
-        String input = sc.nextLine();
-        if (input == null) return;
-        try {
-            controller.removeFromCart(Integer.parseInt(input) - 1);
-            showCartMenu();
-        } catch (NumberFormatException e) {
-            System.out.println("Invalid selection");
+        router.clearScreen();
+        router.printBanner();
+        System.out.println(ANSI_BOLD + "  Remove Item" + ANSI_RESET);
+        System.out.println("  " + "-".repeat(50));
+        for (String line : controller.getCartInfo().split("\n")) {
+            System.out.println("  " + line);
         }
+        System.out.println("  " + "-".repeat(50));
+        System.out.print("  Enter item number to remove (0 to cancel): ");
+        String input = scanner.nextLine().trim();
+        try {
+            int index = Integer.parseInt(input) - 1;
+            if (index == -1) return;
+            controller.removeFromCart(index);
+            System.out.println(ANSI_GREEN + "  Item removed." + ANSI_RESET);
+        } catch (NumberFormatException e) {
+            System.out.println(ANSI_RED + "  Invalid selection." + ANSI_RESET);
+        }
+        router.pause();
     }
 
     private void showCheckout() {
-        System.out.println();
-        sc.nextLine();
-
+        router.clearScreen();
+        router.printBanner();
+        System.out.println(ANSI_BOLD + "  Checkout" + ANSI_RESET);
+        System.out.println("  " + "-".repeat(50));
+        if (controller.isCartEmpty()) {
+            System.out.println(ANSI_RED + "  Cart is empty." + ANSI_RESET);
+            router.pause();
+            return;
+        }
+        for (String line : controller.getCartInfo().split("\n")) {
+            System.out.println("  " + line);
+        }
+        System.out.println("  " + "-".repeat(50));
         double total = controller.calculateTotal();
-        System.out.println("Total: $" + String.format("%.2f", total));
-        System.out.print("\nInput Card Info: ");
-        String cardInfo = sc.nextLine();
-        if (cardInfo == null) return;
+        System.out.printf("  %-30s $%.2f%n", "Total:", total);
+        System.out.println("  " + "-".repeat(50));
+        System.out.print("  Enter card info: ");
+        scanner.nextLine();
 
         String error = controller.checkout();
-
         if (error != null) {
-            System.out.println("\nTransaction Failed: " + error);
+            System.out.println(ANSI_RED + "  Transaction failed: " + error + ANSI_RESET);
         } else {
-            System.out.println("\nPurchase successful!\nTotal charged:" + String.format("$%.2f\nThank you for your order.", total));
-            router.showMainMenu();
+            System.out.println(ANSI_GREEN + "  Purchase successful!" + ANSI_RESET);
+            System.out.printf("  Total charged: $%.2f%n", total);
+            System.out.println("  Thank you for your order.");
         }
+        router.pause();
     }
 }
