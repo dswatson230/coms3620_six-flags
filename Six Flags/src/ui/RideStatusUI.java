@@ -1,6 +1,6 @@
 package ui;
 
-import controllers.RideStatusController;
+import controllers.RideController;
 import models.Ride;
 
 import java.util.List;
@@ -9,19 +9,20 @@ import java.util.Scanner;
 public class RideStatusUI {
     private final UserInterface        router;
     private final Scanner              scanner;
-    private final RideStatusController controller;
+    private final RideController       controller;
 
     private static final String ANSI_BOLD  = "\u001B[1m";
     private static final String ANSI_RESET = "\u001B[0m";
     private static final String ANSI_RED   = "\u001B[31m";
     private static final String ANSI_GREEN = "\u001B[32m";
+    private static final String ANSI_YELLOW = "\u001B[33m";
 
-    private static final String[] STATUSES = {"OPEN", "CLOSED", "MAINTENANCE"};
+    private static final String[] STATUSES = {"OPEN", "CLOSED"};
 
-    public RideStatusUI(UserInterface router, Scanner scanner) {
+    public RideStatusUI(UserInterface router, Scanner scanner, RideController controller) {
         this.router     = router;
         this.scanner    = scanner;
-        this.controller = new RideStatusController();
+        this.controller = controller;
     }
 
     public void showRideMenu() {
@@ -89,7 +90,13 @@ public class RideStatusUI {
             if (selection == rides.size() + 1) {
                 running = false;
             } else if (selection >= 1 && selection <= rides.size()) {
-                showUpdateForm(rides.get(selection - 1));
+                if (rides.get(selection-1).getStatus().equals("MAINTENANCE")) {
+                    System.out.println(ANSI_YELLOW + "  Ride is currently in Maintenance Please Select a different ride." + ANSI_RESET);
+                    router.pause();
+                }
+                else{
+                    showUpdateForm(rides.get(selection - 1));
+                }
             } else {
                 System.out.println(ANSI_RED + "  Invalid selection." + ANSI_RESET);
                 router.pause();

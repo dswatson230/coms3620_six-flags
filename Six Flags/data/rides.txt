@@ -4,7 +4,7 @@ R003,Iron Rattler,OPEN,Fiesta Texas,0
 R004,Scream,CLOSED,Fiesta Texas,0
 R005,Gold Striker,OPEN,Great America,0
 R006,Drop Tower,CLOSED,Great America,0
-R007,Mindbender,OPEN,Over Georgia,0
-R008,Batman,MAINTENANCE,Over Georgia,0
-R009,Comet,MAINTENANCE,Great Escape,0
-R010,Canyon Blaster,MAINTENANCE,Great Escape,0
+R007,Mindbender,MAINTENANCE,Over Georgia,0
+R008,Batman,OPEN,Over Georgia,0
+R009,Comet,OPEN,Great Escape,0
+R010,Canyon Blaster,OPEN,Great Escape,0

@@ -1,6 +1,6 @@
 package ui;
 
-import controllers.RideMaintenanceController;
+import controllers.RideController;
 import interfaces.Location;
 import interfaces.MaintenanceType;
 import models.Ride;
@@ -21,16 +21,16 @@ public class RideMaintenanceUI {
     private static final String ANSI_GREEN  = "\u001B[32m";
     private static final String ANSI_YELLOW = "\u001B[33m";
 
-    private final RideMaintenanceController controller;
+    private final RideController controller;
     private final UserInterface             router;
     private final Scanner                   scanner;
     private final DateTimeFormatter         dateFormatter = DateTimeFormatter.ofPattern("MM/dd/yyyy");
     private final DateTimeFormatter         timeFormatter = DateTimeFormatter.ofPattern("H:mm");
 
-    public RideMaintenanceUI(UserInterface router, Scanner scanner) {
+    public RideMaintenanceUI(UserInterface router, Scanner scanner, RideController controller) {
         this.router     = router;
         this.scanner    = scanner;
-        this.controller = new RideMaintenanceController();
+        this.controller = controller;
     }
 
     public void showMaintenanceMenu() {
@@ -113,8 +113,7 @@ public class RideMaintenanceUI {
             }
 
             for (int i = 0; i < rides.size(); i++) {
-                System.out.println("  " + (i + 1) + ". " + rides.get(i).getName()
-                    + " [" + rides.get(i).getStatus() + "]");
+                System.out.println("  " + (i + 1) + ". " + rides.get(i).getName());
             }
             System.out.println("  " + (rides.size() + 1) + ". Back");
             System.out.println("  " + "-".repeat(40));
@@ -349,7 +348,7 @@ public class RideMaintenanceUI {
                     for (ScheduledMaintenance m : schedule) {
                         if (m.getRideID().equals(ride.getRideID())) {
                             if (!hasRequests) {
-                                System.out.println("  " + ride.getName() + ":");
+                                System.out.println("\n  " + ride.getName() + ":");
                                 hasRequests = true;
                             }
                             System.out.println(formatMaintenanceRequest(ride, m));

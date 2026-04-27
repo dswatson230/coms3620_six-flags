@@ -8,6 +8,7 @@ import java.util.List;
 
 public class WaitTimeController {
     private static final String RIDES_FILE = "data/rides.txt";
+    //private static final String RIDES_FILE = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/rides.txt";
 
     public List<Ride> loadRides() {
         List<Ride> rides = new ArrayList<>();

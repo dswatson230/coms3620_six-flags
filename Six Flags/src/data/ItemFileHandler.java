@@ -8,7 +8,8 @@ import java.io.*;
 import java.util.ArrayList;
  
 public class ItemFileHandler {
-    private static final String FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Iteration 1/Six Flags/data/inventory.txt";
+    private static final String FILE_PATH = "data/inventory.txt";
+    //private static final String FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/inventory.txt";
  
     public boolean writeItem(Item item) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(FILE_PATH, true))) {

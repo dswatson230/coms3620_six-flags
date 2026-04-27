@@ -15,6 +15,8 @@ import java.util.Scanner;
 public class RefundUI {
     private static final String PURCHASE_FILE_PATH = "data/purchases.txt";
     private static final String REFUND_FILE_PATH   = "data/refunds.txt";
+    //private static final String PURCHASE_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/purchases.txt";
+    //private static final String REFUND_FILE_PATH   = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/refunds.txt";
 
     private static final String ANSI_BOLD  = "\u001B[1m";
     private static final String ANSI_RESET = "\u001B[0m";

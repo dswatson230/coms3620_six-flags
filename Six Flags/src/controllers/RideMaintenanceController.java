@@ -1,6 +1,5 @@
 package controllers;
 
-import interfaces.MaintenanceType;
 import interfaces.Location;
 import models.Ride;
 import models.ScheduledMaintenance;
@@ -15,6 +14,8 @@ import java.util.stream.Collectors;
 public class RideMaintenanceController {
     private static final String MAINTENANCE_FILE = "data/rides_maintenance.txt";
     private static final String RIDES_FILE       = "data/rides.txt";
+    //private static final String MAINTENANCE_FILE = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/rides_maintenance.txt";
+    //private static final String RIDES_FILE       = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/rides.txt";
 
     public List<Ride> loadRides() {
         List<Ride> rides = new ArrayList<>();
@@ -30,6 +31,7 @@ public class RideMaintenanceController {
         }
         return rides;
     }
+
 
     public List<Ride> loadRidesFromLocation(Location location) {
         return loadRides().stream()

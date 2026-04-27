@@ -16,6 +16,9 @@ public class HREmployeeUI {
     private static final String APPLICANT_FILE_PATH   = "data/applicants.txt";
     private static final String EMPLOYEE_FILE_PATH    = "data/employees.txt";
     private static final String JOB_OPENING_FILE_PATH = "data/job_openings.txt";
+    //private static final String APPLICANT_FILE_PATH   = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/applicants.txt";
+    //private static final String EMPLOYEE_FILE_PATH    = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/employees.txt";
+    //private static final String JOB_OPENING_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/job_openings.txt";
 
     private static final String ANSI_BOLD  = "\u001B[1m";
     private static final String ANSI_RESET = "\u001B[0m";

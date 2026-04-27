@@ -1,6 +1,7 @@
 package ui;
 
 import controllers.ItemController;
+import controllers.RideController;
 import data.ItemInventory;
 
 import java.util.Scanner;
@@ -12,6 +13,7 @@ public class UserInterface {
     private static final String ANSI_YELLOW = "\u001B[33m";
 
     private final ItemController      controller;
+    private final RideController      rideController;
     private final PurchaseUI          purchaseUI;
     private final InventoryUI         inventoryUI;
     private final SchedulingUI        schedulingUI;
@@ -27,17 +29,18 @@ public class UserInterface {
     public UserInterface() {
         this.scanner            = new Scanner(System.in);
         this.controller         = new ItemController();
+        this.rideController     = new RideController();
         ItemInventory shared    = controller.getSharedInventory();
         this.purchaseUI         = new PurchaseUI(controller, this, scanner);
         this.inventoryUI        = new InventoryUI(controller, this, scanner);
         this.schedulingUI       = new SchedulingUI(scanner, this);
         this.validationUI       = new ValidationUI(this, scanner);
-        this.rideStatusUI       = new RideStatusUI(this, scanner);
+        this.rideStatusUI       = new RideStatusUI(this, scanner, rideController);
         this.refundUI           = new RefundUI(scanner, this, shared);
         this.hrEmployeeUI       = new HREmployeeUI(this, scanner);
         this.waitTimeUI         = new WaitTimeUI(this, scanner);
         this.customerIssueUI    = new CustomerIssueUI(this, scanner);
-        this.rideMaintenanceUI  = new RideMaintenanceUI(this, scanner);
+        this.rideMaintenanceUI  = new RideMaintenanceUI(this, scanner, rideController);
     }
 
     public void start() {

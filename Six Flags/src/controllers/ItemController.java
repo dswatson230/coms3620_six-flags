@@ -10,6 +10,7 @@ import java.util.ArrayList;
 
 public class ItemController implements ItemControllerInterface {
     private static final String PURCHASE_FILE_PATH = "data/purchases.txt";
+    //private static final String PURCHASE_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/purchases.txt";
 
     private PurchaseController purchaseController;
     private StoreController    storeController;
