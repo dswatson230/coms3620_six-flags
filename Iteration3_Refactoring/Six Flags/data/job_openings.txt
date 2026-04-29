@@ -1,0 +1,5 @@
+J001 | Ride Operator | Rides & Attractions | APPROVED | CLOSED
+J002 | Security Officer | Security | APPROVED | CLOSED
+J003 | Food Service Team Member | Food & Beverage | APPROVED | CLOSED
+J004 | Maintenance Technician | Maintenance | PENDING | OPEN
+J005 | Finance Associate | Finance | APPROVED | CLOSED
