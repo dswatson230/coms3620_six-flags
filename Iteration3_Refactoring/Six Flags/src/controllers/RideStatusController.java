@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class RideStatusController {
-    private static final String RIDES_FILE = "data/rides.txt";
-    private static final String LOG_FILE   = "data/ride_status_log.txt";
-    //private static final String RIDES_FILE = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/rides.txt";
-    //private static final String LOG_FILE   = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/ride_status_log.txt";
+    //private static final String RIDES_FILE = "data/rides.txt";
+    //private static final String LOG_FILE   = "data/ride_status_log.txt";
+    private static final String RIDES_FILE = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/rides.txt";
+    private static final String LOG_FILE   = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/ride_status_log.txt";
 
     private static final String[] VALID_STATUSES = {"OPEN", "CLOSED", "MAINTENANCE"};
 

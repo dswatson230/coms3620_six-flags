@@ -1,11 +1,11 @@
-package models;
+package models.item;
  
 import data.TestDataProvider;
-import interfaces.ItemStatus;
+import interfaces.types.ItemStatus;
  
-public class ItemConfirmation implements interfaces.ItemConfirmationInterface {
+public class ItemConfirmation  {
     private String genMessage;
-    private Item item;
+    private CartItem item;
  
     private final TestDataProvider dataProvider;
  
@@ -26,22 +26,23 @@ public class ItemConfirmation implements interfaces.ItemConfirmationInterface {
             setGenMessage("Item is invalid. Process denied.");
             return false;
         }
+        ItemStatus originalStatus = item.getStatus();
         verifyItemStatus(item);
-        return item.getStatus() == ItemStatus.VALID;
+        return originalStatus == ItemStatus.VALID;
     }
  
     // Step 2: Retrieve item from system
-    public Item retrieveItemInformation(String id) {
+    public CartItem retrieveItemInformation(String id) {
         return dataProvider.getTestItem(id);
     }
  
     // Step 3: Check if item is valid
-    public boolean isItemValid(Item item) {
+    public boolean isItemValid(CartItem item) {
         return item != null && item.getStatus() != ItemStatus.INVALID;
     }
  
     // Step 4 & 6: Verify and update item status
-    public void verifyItemStatus(Item item) {
+    public void verifyItemStatus(CartItem item) {
         if (item.getStatus() == ItemStatus.USED) {
             setGenMessage("Item has already been used or processed. Process denied.");
         } else if (item.getStatus() == ItemStatus.VALID) {
@@ -52,7 +53,7 @@ public class ItemConfirmation implements interfaces.ItemConfirmationInterface {
  
     public String getGenMessage()          { return genMessage; }
     public void setGenMessage(String msg)  { this.genMessage = msg; }
-    public Item getItem()                  { return item; }
-    public void setItem(Item item)         { this.item = item; }
+    public CartItem getItem()                  { return item; }
+    public void setItem(CartItem item)         { this.item = item; }
     public data.TestDataProvider getDataProvider() { return dataProvider; }
 }

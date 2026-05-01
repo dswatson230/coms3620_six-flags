@@ -1,4 +1,4 @@
-package interfaces;
+package interfaces.types;
 
 public enum Location {
     MAGIC_MOUNTAIN,

@@ -8,8 +8,8 @@ import java.util.List;
 import java.util.Scanner;
 
 public class CustomerIssueUI {
-    private static final String ISSUES_FILE_PATH = "data/issues.txt";
-    //private static final String ISSUES_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/issues.txt";
+    //private static final String ISSUES_FILE_PATH = "data/issues.txt";
+    private static final String ISSUES_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/issues.txt";
 
     private static final String ANSI_BOLD  = "\u001B[1m";
     private static final String ANSI_RESET = "\u001B[0m";

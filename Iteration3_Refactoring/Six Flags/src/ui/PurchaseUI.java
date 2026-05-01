@@ -1,16 +1,23 @@
 package ui;
 
 import controllers.ItemController;
-import interfaces.Location;
-import models.Item;
+import interfaces.types.ItemAddOns;
+import interfaces.types.Location;
+import interfaces.types.MealPlanType;
+import models.item.CartItem;
+import models.item.decorators.AddOnSelection;
+import models.item.decorators.AddOnService;
+import models.item.InventoryItem;
 
 import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 public class PurchaseUI {
     private final ItemController controller;
     private final UserInterface  router;
     private final Scanner        scanner;
+    private final AddOnService   addOnService;
 
     private static final String ANSI_BOLD  = "\u001B[1m";
     private static final String ANSI_RESET = "\u001B[0m";
@@ -21,6 +28,7 @@ public class PurchaseUI {
         this.controller = controller;
         this.router     = router;
         this.scanner    = scanner;
+        addOnService = new AddOnService();
     }
 
     public void showLocationSelection() {
@@ -64,7 +72,7 @@ public class PurchaseUI {
         while (running) {
             router.clearScreen();
             router.printBanner();
-            ArrayList<Item> items = controller.getAvailableItemsByLocation(location);
+            ArrayList<InventoryItem> items = controller.getAvailableItemsByLocation(location);
             System.out.println(ANSI_BOLD + "  Items at " + location.name().replace("_", " ") + ANSI_RESET);
             System.out.println("  " + "-".repeat(50));
             if (items.isEmpty()) {
@@ -76,7 +84,7 @@ public class PurchaseUI {
             System.out.printf("  %-4s %-25s %-10s %-6s%n", "No.", "Name", "Price", "Qty");
             System.out.println("  " + "-".repeat(50));
             for (int i = 0; i < items.size(); i++) {
-                Item item = items.get(i);
+                InventoryItem item = items.get(i);
                 System.out.printf("  %-4s %-25s %-10s %-6s%n",
                     (i + 1) + ".",
                     item.getName(),
@@ -108,7 +116,7 @@ public class PurchaseUI {
         }
     }
 
-    private void showQuantityInput(Item item) {
+    private void showQuantityInput(InventoryItem item) {
         boolean entering = true;
         while (entering) {
             router.clearScreen();
@@ -137,7 +145,9 @@ public class PurchaseUI {
                 continue;
             }
 
-            String error = controller.addToCart(item, quantity);
+            List<AddOnSelection> addOns = showAddOns(item);
+
+            String error = controller.addToCart(item, quantity, addOns);
             if (error != null) {
                 System.out.println(ANSI_RED + "  Error: " + error + ANSI_RESET);
                 router.pause();
@@ -149,6 +159,103 @@ public class PurchaseUI {
         }
     }
 
+    private List<AddOnSelection> showAddOns(InventoryItem item) {
+        ArrayList<AddOnSelection> selected = new ArrayList<>();
+        List<ItemAddOns> options = new ArrayList<>();
+
+        for (ItemAddOns addOn : ItemAddOns.values()) {
+            if (addOnService.supports(addOn, item.getType())) {
+                options.add(addOn);
+            }
+        }
+
+        if (options.isEmpty()) return selected;
+
+        boolean selecting = true;
+        while (selecting) {
+            router.clearScreen();
+            router.printBanner();
+
+            System.out.println(ANSI_BOLD + "  Add-Ons for " + item.getName() + ANSI_RESET);
+            System.out.println("  " + "-".repeat(40));
+            for (int i = 0; i < options.size(); i++) {
+                System.out.println("  " + (i + 1) + ". " + formatAddOn(options.get(i)));
+            }
+
+            System.out.println("  " + (options.size() + 1) + ". Done");
+            System.out.print("  Select an option: ");
+
+            String input = scanner.nextLine().trim();
+
+            int choice;
+            try {
+                choice = Integer.parseInt(input);
+            } catch (NumberFormatException e) {
+                System.out.println(ANSI_RED + "  Invalid input." + ANSI_RESET);
+                router.pause();
+                continue;
+            }
+
+            if (choice == options.size() + 1) {
+                selecting = false;
+            } else if (choice >= 1 && choice <= options.size()) {
+                ItemAddOns selectedAddOn = options.get(choice - 1);
+
+                if (!selected.contains(selectedAddOn)) {
+                    Object config = null;
+
+                    if (selectedAddOn == ItemAddOns.MEAL_PLAN) {
+                        config = promptMealPlanType();
+                    }
+
+                    selected.add(new AddOnSelection(selectedAddOn, config));
+
+                    System.out.println(ANSI_GREEN + "  Added " + selectedAddOn.toString() + ANSI_RESET);
+                } else {
+                    System.out.println(ANSI_RED + "  Already selected." + ANSI_RESET);
+                }
+
+                router.pause();
+            } else {
+                System.out.println(ANSI_RED + "  Invalid selection." + ANSI_RESET);
+                router.pause();
+            }
+        }
+
+        return selected;
+    }
+
+    private String formatAddOn(ItemAddOns addOn) {
+        if (addOn == ItemAddOns.MEAL_PLAN) {
+            return "Meal Plan (varies)";
+        }
+
+        return addOn.name().replace("_", " ")
+                + " ($" + addOn.getPrice() + ")";
+    }
+
+    private MealPlanType promptMealPlanType() {
+        MealPlanType[] types = MealPlanType.values();
+
+        while (true) {
+            for (int i = 0; i < types.length; i++) {
+                System.out.println((i + 1) + ". " + types[i] + " ($" + types[i].getPrice() + ")");
+            }
+
+            System.out.print("\nSelect Meal Plan: ");
+
+            try {
+                int choice = Integer.parseInt(scanner.nextLine().trim());
+
+                if (choice >= 1 && choice <= types.length) {
+                    return types[choice - 1];
+                }
+            } catch (Exception ignored) {}
+
+            System.out.println("Invalid.");
+        }
+    }
+
     public void showCartMenu() {
         boolean running = true;
         while (running) {
@@ -156,9 +263,12 @@ public class PurchaseUI {
             router.printBanner();
             System.out.println(ANSI_BOLD + "  Cart" + ANSI_RESET);
             System.out.println("  " + "-".repeat(50));
-            for (String line : controller.getCartInfo().split("\n")) {
+
+            List<String> cartLines = controller.getCartInfo();
+            for (String line : cartLines) {
                 System.out.println("  " + line);
             }
+
             System.out.println("  " + "-".repeat(50));
             System.out.printf("  %-30s $%.2f%n", "Total:", controller.calculateTotal());
             System.out.println("  " + "-".repeat(50));
@@ -187,7 +297,8 @@ public class PurchaseUI {
         router.printBanner();
         System.out.println(ANSI_BOLD + "  Remove Item" + ANSI_RESET);
         System.out.println("  " + "-".repeat(50));
-        for (String line : controller.getCartInfo().split("\n")) {
+        List<String> cartLines = controller.getCartInfo();
+        for (String line : cartLines) {
             System.out.println("  " + line);
         }
         System.out.println("  " + "-".repeat(50));
@@ -214,7 +325,8 @@ public class PurchaseUI {
             router.pause();
             return;
         }
-        for (String line : controller.getCartInfo().split("\n")) {
+        List<String> cartLines = controller.getCartInfo();
+        for (String line : cartLines) {
             System.out.println("  " + line);
         }
         System.out.println("  " + "-".repeat(50));

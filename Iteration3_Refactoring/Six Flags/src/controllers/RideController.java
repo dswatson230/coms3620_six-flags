@@ -1,6 +1,6 @@
 package controllers;
 
-import interfaces.Location;
+import interfaces.types.Location;
 import models.Ride;
 import models.ScheduledMaintenance;
 

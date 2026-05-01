@@ -2,8 +2,9 @@ package controllers;
  
 import data.ItemInventory;
 import factory.ItemFactory;
-import interfaces.Location;
-import models.Item;
+import interfaces.types.ItemType;
+import interfaces.types.Location;
+import models.item.InventoryItem;
 import validation.InputValidator;
  
 import java.util.ArrayList;
@@ -14,24 +15,24 @@ public class StoreController {
     private ItemFactory factory;
  
     private static final Object[][] ITEM_TEMPLATES = {
-        { "General Admission",  39.99 },
-        { "Gold Pass",          89.99 },
-        { "Burger Combo",        9.99 },
-        { "Hot Dog",             5.99 },
-        { "Nachos",              6.99 },
-        { "Funnel Cake",         7.49 },
-        { "Pizza Slice",         5.49 },
-        { "Lemonade",            3.99 },
-        { "BBQ Sandwich",        8.99 },
-        { "Cotton Candy",        3.49 },
-        { "Popcorn",             4.49 },
-        { "Soft Pretzel",        5.99 },
-        { "Superman Ride Pass", 15.00 },
-        { "Goliath Ride Pass",  15.00 },
-        { "Iron Rattler Pass",  15.00 },
-        { "Gold Striker Pass",  15.00 },
-        { "Mindbender Pass",    15.00 },
-        { "Comet Ride Pass",    15.00 },
+        { ItemType.DAILY_TICKET, "General Admission",  39.99 },
+        { ItemType.SEASON_PASS,  "Gold Pass",          89.99 },
+        { ItemType.CONCESSION,   "Burger Combo",        9.99 },
+        { ItemType.CONCESSION,   "Hot Dog",             5.99 },
+        { ItemType.CONCESSION,   "Nachos",              6.99 },
+        { ItemType.CONCESSION,   "Funnel Cake",         7.49 },
+        { ItemType.CONCESSION,   "Pizza Slice",         5.49 },
+        { ItemType.CONCESSION,   "Lemonade",            3.99 },
+        { ItemType.CONCESSION,   "BBQ Sandwich",        8.99 },
+        { ItemType.CONCESSION,   "Cotton Candy",        3.49 },
+        { ItemType.CONCESSION,   "Popcorn",             4.49 },
+        { ItemType.CONCESSION,   "Soft Pretzel",        5.99 },
+        { ItemType.DAILY_TICKET, "Superman Ride Pass", 15.00 },
+        { ItemType.DAILY_TICKET, "Goliath Ride Pass",  15.00 },
+        { ItemType.DAILY_TICKET, "Iron Rattler Pass",  15.00 },
+        { ItemType.DAILY_TICKET, "Gold Striker Pass",  15.00 },
+        { ItemType.DAILY_TICKET, "Mindbender Pass",    15.00 },
+        { ItemType.DAILY_TICKET, "Comet Ride Pass",    15.00 },
     };
  
     public StoreController(ItemInventory inventory) {
@@ -44,7 +45,7 @@ public class StoreController {
         return ITEM_TEMPLATES;
     }
  
-    public ArrayList<Item> getAllItems() {
+    public ArrayList<InventoryItem> getAllItems() {
         return inventory.getAllItems();
     }
  
@@ -52,12 +53,16 @@ public class StoreController {
         return inventory.getQuantityFor(name, location);
     }
  
-    public int increaseQuantity(String name, double price, Location location, int amount) {
-        return inventory.increaseQuantity(name, price, location, amount);
+    public int increaseQuantity(ItemType type, String name, double price, Location location, int amount) {
+        return inventory.increaseQuantity(type, name, price, location, amount);
     }
  
     // Returns null on success, error message on failure
     public String storeItem(String name, String priceInput, String quantityInput, String locationInput) {
+        return storeItem(ItemType.DAILY_TICKET, name, priceInput, quantityInput, locationInput);
+    }
+
+    public String storeItem(ItemType type, String name, String priceInput, String quantityInput, String locationInput) {
         double price;
         int quantity;
         Location location;
@@ -71,7 +76,7 @@ public class StoreController {
             return e.getMessage();
         }
  
-        Item item = factory.createInventoryItem(validatedName, price, location, quantity);
+        InventoryItem item = factory.createInventoryItem(type, validatedName, price, location, quantity);
         if (!inventory.addItem(item)) {
             return "Item already exists at this location.";
         }

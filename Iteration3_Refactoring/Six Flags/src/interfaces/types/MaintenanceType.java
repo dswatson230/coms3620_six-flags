@@ -1,6 +1,4 @@
-package interfaces;
-
-import java.time.LocalDate;
+package interfaces.types;
 
 public enum MaintenanceType {
     DAILY,

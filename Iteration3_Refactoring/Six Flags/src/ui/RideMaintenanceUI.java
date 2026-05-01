@@ -1,8 +1,8 @@
 package ui;
 
 import controllers.RideController;
-import interfaces.Location;
-import interfaces.MaintenanceType;
+import interfaces.types.Location;
+import interfaces.types.MaintenanceType;
 import models.Ride;
 import models.ScheduledMaintenance;
 

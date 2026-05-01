@@ -1,6 +1,6 @@
 package validation;
  
-import interfaces.Location;
+import interfaces.types.Location;
  
 public class InputValidator {
     public double validatePrice(String input) throws IllegalArgumentException {

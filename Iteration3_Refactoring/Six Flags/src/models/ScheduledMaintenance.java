@@ -1,6 +1,6 @@
 package models;
 
-import interfaces.MaintenanceType;
+import interfaces.types.MaintenanceType;
 
 import java.time.LocalDateTime;
 import java.time.format.DateTimeFormatter;

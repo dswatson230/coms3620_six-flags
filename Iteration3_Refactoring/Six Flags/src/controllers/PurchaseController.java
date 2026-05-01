@@ -3,10 +3,13 @@ package controllers;
 import data.ItemInventory;
 import data.PurchaseFileHandler;
 import factory.ItemFactory;
-import interfaces.Location;
+import interfaces.types.Location;
 import models.CartManager;
-import models.Item;
 import models.PurchaseRecord;
+import models.item.decorators.AddOnSelection;
+import models.item.decorators.AddOnService;
+import models.item.CartItem;
+import models.item.InventoryItem;
 import validation.InputValidator;
 
 import java.io.IOException;
@@ -20,6 +23,7 @@ public class PurchaseController {
     private InputValidator      validator;
     private ItemFactory         factory;
     private PurchaseFileHandler purchaseFileHandler;
+    private AddOnService        addOnService;
 
     public PurchaseController(ItemInventory inventory, PurchaseFileHandler purchaseFileHandler) {
         this.inventory           = inventory;
@@ -27,20 +31,27 @@ public class PurchaseController {
         this.validator           = new InputValidator();
         this.factory             = new ItemFactory();
         this.purchaseFileHandler = purchaseFileHandler;
+        addOnService = new AddOnService();
     }
 
-    public ArrayList<Item> getAvailableItems(Location location) {
+    public ArrayList<InventoryItem> getAvailableItems(Location location) {
         return inventory.getAllItems().stream()
             .filter(i -> i.getLocation() == location && i.getQuantity() > 0)
             .collect(java.util.stream.Collectors.toCollection(ArrayList::new));
     }
 
-    public String addToCart(Item selectedItem, int quantity) {
+    public String addToCart(InventoryItem selectedItem, int quantity, List<AddOnSelection> addOns) {
         if (!inventory.verifyQuantity(selectedItem, quantity)) {
             return "Insufficient quantity. Only " + selectedItem.getQuantity() + " available.";
         }
-        Item cartItem = factory.createInventoryItem(
-            selectedItem.getName(), selectedItem.getPrice(), selectedItem.getLocation(), quantity);
+
+        InventoryItem item = selectedItem;
+
+        for (AddOnSelection addOn : addOns) {
+            item = addOnService.apply(addOn.getAddOn(), item, addOn.getConfig());
+        }
+
+        CartItem cartItem = factory.createCartItem(item.getItem(), selectedItem, quantity);
         cartManager.addItem(cartItem);
         return null;
     }
@@ -50,7 +61,7 @@ public class PurchaseController {
     }
 
     public String checkout() {
-        ArrayList<Item> cart = cartManager.getCart();
+        ArrayList<CartItem> cart = cartManager.getCart();
         String failedItem = inventory.validateAllReductions(cart);
         if (failedItem != null) {
             return "Transaction cancelled. Insufficient stock for: " + failedItem +
@@ -60,7 +71,7 @@ public class PurchaseController {
         inventory.commitAllReductions(cart);
 
         String recordId = generateRecordId();
-        List<Item> purchasedItems = new ArrayList<>(cart);
+        List<CartItem> purchasedItems = new ArrayList<>(cart);
         PurchaseRecord record = new PurchaseRecord(recordId, purchasedItems, "PURCHASED");
         try {
             purchaseFileHandler.writeRecord(record);
@@ -76,7 +87,7 @@ public class PurchaseController {
         return cartManager.calculateTotal();
     }
 
-    public String getCartInfo() {
+    public List<String> getCartInfo() {
         return cartManager.getCartInfo();
     }
 

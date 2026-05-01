@@ -13,10 +13,10 @@ import java.util.List;
 import java.util.Scanner;
 
 public class SchedulingUI {
-    private static final String EMPLOYEE_FILE_PATH = "data/employees.txt";
-    private static final String SCHEDULE_FILE_PATH = "data/schedules.txt";
-    //private static final String EMPLOYEE_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/employees.txt";
-    //private static final String SCHEDULE_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/schedules.txt";
+    //private static final String EMPLOYEE_FILE_PATH = "data/employees.txt";
+    //private static final String SCHEDULE_FILE_PATH = "data/schedules.txt";
+    private static final String EMPLOYEE_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/employees.txt";
+    private static final String SCHEDULE_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/schedules.txt";
 
     private static final String ANSI_BOLD  = "\u001B[1m";
     private static final String ANSI_RESET = "\u001B[0m";

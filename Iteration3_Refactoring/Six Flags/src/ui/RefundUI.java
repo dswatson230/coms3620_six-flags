@@ -6,17 +6,17 @@ import data.ItemInventory;
 import data.PurchaseFileHandler;
 import data.RefundFileHandler;
 import interfaces.RefundControllerInterface;
-import models.Item;
 import models.PurchaseRecord;
+import models.item.CartItem;
 
 import java.util.List;
 import java.util.Scanner;
 
 public class RefundUI {
-    private static final String PURCHASE_FILE_PATH = "data/purchases.txt";
-    private static final String REFUND_FILE_PATH   = "data/refunds.txt";
-    //private static final String PURCHASE_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/purchases.txt";
-    //private static final String REFUND_FILE_PATH   = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/refunds.txt";
+    //private static final String PURCHASE_FILE_PATH = "data/purchases.txt";
+    //private static final String REFUND_FILE_PATH   = "data/refunds.txt";
+    private static final String PURCHASE_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/purchases.txt";
+    private static final String REFUND_FILE_PATH   = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/refunds.txt";
 
     private static final String ANSI_BOLD  = "\u001B[1m";
     private static final String ANSI_RESET = "\u001B[0m";
@@ -90,7 +90,7 @@ public class RefundUI {
             for (int i = 0; i < records.size(); i++) {
                 PurchaseRecord record = records.get(i);
                 StringBuilder itemNames = new StringBuilder();
-                for (Item item : record.getItems()) {
+                for (CartItem item : record.getItems()) {
                     if (itemNames.length() > 0) itemNames.append(", ");
                     itemNames.append(item.getName()).append(" x").append(item.getQuantity());
                 }
@@ -127,14 +127,14 @@ public class RefundUI {
     private void showItemSelection(PurchaseRecord record) {
         router.clearScreen();
         router.printBanner();
-        List<Item> items = record.getItems();
+        List<CartItem> items = record.getItems();
 
         System.out.println(ANSI_BOLD + "  Record: " + record.getRecordId() + ANSI_RESET);
         System.out.println("  " + "-".repeat(55));
         System.out.printf("  %-5s %-25s %-10s %-6s%n", "No.", "Name", "Price", "Qty");
         System.out.println("  " + "-".repeat(55));
         for (int i = 0; i < items.size(); i++) {
-            Item item = items.get(i);
+            CartItem item = items.get(i);
             System.out.printf("  %-5s %-25s %-10s %-6s%n",
                 (i + 1) + ".",
                 item.getName(),
@@ -164,7 +164,7 @@ public class RefundUI {
         showQuantityInput(record, itemIndex, items.get(itemIndex));
     }
 
-    private void showQuantityInput(PurchaseRecord record, int itemIndex, Item item) {
+    private void showQuantityInput(PurchaseRecord record, int itemIndex, CartItem item) {
         boolean entering = true;
         while (entering) {
             router.clearScreen();
