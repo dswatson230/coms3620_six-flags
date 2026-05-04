@@ -4,8 +4,8 @@ import data.ItemInventory;
 import interfaces.PurchaseFileHandlerInterface;
 import interfaces.RefundFileHandlerInterface;
 import interfaces.RefundSystemInterface;
+import models.Item;
 import models.PurchaseRecord;
-import models.item.CartItem;
 
 import java.io.IOException;
 
@@ -40,21 +40,21 @@ public class RefundSystem implements RefundSystemInterface {
             if (record == null) return RECORD_NOT_FOUND;
 
             // Step 2: find item by index to avoid duplicate name collision
-            CartItem item = record.findItemByIndex(itemIndex);
+            Item item = record.findItemByIndex(itemIndex);
             if (item == null) return ITEM_NOT_FOUND;
 
             // Step 3: check refundable
-            if (!record.isRefundable(item.getItem().getName())) return NON_REFUNDABLE_MESSAGE;
+            if (!record.isRefundable(item.getName())) return NON_REFUNDABLE_MESSAGE;
 
             // Step 4: validate quantity
             if (quantity <= 0 || quantity > item.getQuantity()) return INVALID_QUANTITY;
 
             // Step 5: restore inventory for only the refunded item
-            inventory.increaseQuantity(item.getType(), item.getName(), item.getPrice(), item.getLocation(), quantity);
+            inventory.increaseQuantity(item.getName(), item.getPrice(), item.getLocation(), quantity);
 
             // Step 6: log refund
             if (!refundFileHandler.logRefund(recordId.trim(), item.getName(), quantity)) {
-                inventory.increaseQuantity(item.getType(), item.getName(), item.getPrice(), item.getLocation(), -quantity);
+                inventory.increaseQuantity(item.getName(), item.getPrice(), item.getLocation(), -quantity);
                 return FILE_ERROR_MESSAGE;
             }
 

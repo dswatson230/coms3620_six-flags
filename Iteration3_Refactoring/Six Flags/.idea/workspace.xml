@@ -4,84 +4,7 @@
     <option name="autoReloadType" value="SELECTIVE" />
   </component>
   <component name="ChangeListManager">
-    <list default="true" id="712f6f06-a699-4b62-869f-3d93bf54c48d" name="Changes" comment="">
-      <change afterPath="$PROJECT_DIR$/.idea/compiler.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/jarRepositories.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/.idea/vcs.xml" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/interfaces/types/ItemAddOns.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/interfaces/types/ItemType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/interfaces/types/MealPlanType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/interfaces/types/SeasonPassType.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/CartItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/Concession.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/DailyTicket.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/InventoryItem.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/Item.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/Merch.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/SeasonPass.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/decorators/AddOnSelection.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/decorators/AddOnService.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/decorators/FastLaneDecorator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/decorators/ItemDecorator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/decorators/MealPlanDecorator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/decorators/ParkingDecorator.java" afterDir="false" />
-      <change afterPath="$PROJECT_DIR$/src/models/item/decorators/VIPDecorator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/misc.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/misc.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/inventory.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/inventory.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/data/purchases.txt" beforeDir="false" afterPath="$PROJECT_DIR$/data/purchases.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/ItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/ItemController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/PurchaseController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/PurchaseController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/RefundSystem.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/RefundSystem.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/RideController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/RideController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/RideMaintenanceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/RideMaintenanceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/RideStatusController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/RideStatusController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/StoreController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/StoreController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/controllers/WaitTimeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/controllers/WaitTimeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/ItemFileHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/ItemFileHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/ItemInventory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/ItemInventory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/PurchaseFileHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/PurchaseFileHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/data/TestDataProvider.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/data/TestDataProvider.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/factory/ItemFactory.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/factory/ItemFactory.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/ItemConfirmation.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/ItemConfirmationInterface.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/ItemInterface.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/ItemInterface.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/ItemStatus.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/types/ItemStatus.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/Location.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/types/Location.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/interfaces/MaintenanceType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/types/MaintenanceType.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/CartManager.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/CartManager.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/InventoryItem.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/Item.java" beforeDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/ItemConfirmation.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/item/ItemConfirmation.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/PurchaseRecord.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/PurchaseRecord.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/models/ScheduledMaintenance.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/ScheduledMaintenance.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/CustomerIssueUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/CustomerIssueUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/InventoryUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/InventoryUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/PurchaseUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/PurchaseUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/RefundUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/RefundUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/RideMaintenanceUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/RideMaintenanceUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/SchedulingUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/SchedulingUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/ui/ValidationUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/ui/ValidationUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/src/validation/InputValidator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/validation/InputValidator.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/data/applicants.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/data/applicants.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/data/employees.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/data/employees.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/data/inventory.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/data/inventory.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/data/job_openings.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/data/job_openings.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/data/purchases.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/data/purchases.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/data/refunds.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/data/refunds.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/data/ride_status_log.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/data/ride_status_log.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/data/rides.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/data/rides.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/data/rides_maintenance.txt" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/data/rides_maintenance.txt" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/src/controllers/ItemController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/src/controllers/ItemController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/src/controllers/RideMaintenanceController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/src/controllers/RideMaintenanceController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/src/controllers/RideStatusController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/src/controllers/RideStatusController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/src/controllers/WaitTimeController.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/src/controllers/WaitTimeController.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/src/data/ItemFileHandler.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/src/data/ItemFileHandler.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/src/ui/CustomerIssueUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/src/ui/CustomerIssueUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/src/ui/HREmployeeUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/src/ui/HREmployeeUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/src/ui/RefundUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/src/ui/RefundUI.java" afterDir="false" />
-      <change beforePath="$PROJECT_DIR$/../../Six Flags/src/ui/SchedulingUI.java" beforeDir="false" afterPath="$PROJECT_DIR$/../../Six Flags/src/ui/SchedulingUI.java" afterDir="false" />
-    </list>
+    <list default="true" id="712f6f06-a699-4b62-869f-3d93bf54c48d" name="Changes" comment="" />
     <option name="SHOW_DIALOG" value="false" />
     <option name="HIGHLIGHT_CONFLICTS" value="true" />
     <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
@@ -91,32 +14,12 @@
     <option name="RECENT_TEMPLATES">
       <list>
         <option value="Interface" />
-        <option value="Enum" />
         <option value="Class" />
       </list>
     </option>
   </component>
   <component name="Git.Settings">
-    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
-  </component>
-  <component name="GitLabMergeRequestFiltersHistory"><![CDATA[{
-  "lastFilter": {
-    "state": "OPENED",
-    "assignee": {
-      "type": "org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue",
-      "username": "dwats23",
-      "fullname": "Watson, David S"
-    }
-  }
-}]]></component>
-  <component name="GitLabMergeRequestsSettings"><![CDATA[{
-  "selectedUrlAndAccountId": {
-    "first": "https://git.las.iastate.edu/cs362/six-flags",
-    "second": "b379b14f-5b67-4cde-b322-b70da58847ad"
-  }
-}]]></component>
-  <component name="ProblemsViewState">
-    <option name="selectedTabId" value="CurrentFile" />
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
   <component name="ProjectColorInfo">{
   &quot;associatedIndex&quot;: 3,
@@ -127,46 +30,32 @@
     <option name="hideEmptyMiddlePackages" value="true" />
     <option name="showLibraryContents" value="true" />
   </component>
-  <component name="PropertiesComponent"><![CDATA[{
-  "keyToString": {
-    "Application.Main.executor": "Run",
-    "Application.Park.executor": "Run",
-    "Application.UserInterface.executor": "Run",
-    "ModuleVcsDetector.initialDetectionPerformed": "true",
-    "RunOnceActivity.ShowReadmeOnStart": "true",
-    "RunOnceActivity.git.unshallow": "true",
-    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
-    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
-    "codeWithMe.voiceChat.enabledByDefault": "false",
-    "git-widget-placeholder": "main",
-    "kotlin-language-version-configured": "true",
-    "last_opened_file_path": "C:/Users/longi/COMS/coms3620/six-flags/Iteration3_Refactoring/Six Flags",
-    "nodejs_package_manager_path": "npm",
-    "onboarding.tips.debug.path": "C:/Users/longi/COMS/coms3090/5_rk_2/Backend/Six Flags/src/Main.java"
+  <component name="PropertiesComponent">{
+  &quot;keyToString&quot;: {
+    &quot;Application.Main.executor&quot;: &quot;Run&quot;,
+    &quot;Application.UserInterface.executor&quot;: &quot;Run&quot;,
+    &quot;ModuleVcsDetector.initialDetectionPerformed&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.ShowReadmeOnStart&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.git.unshallow&quot;: &quot;true&quot;,
+    &quot;RunOnceActivity.typescript.service.memoryLimit.init&quot;: &quot;true&quot;,
+    &quot;codeWithMe.voiceChat.enabledByDefault&quot;: &quot;false&quot;,
+    &quot;git-widget-placeholder&quot;: &quot;master&quot;,
+    &quot;kotlin-language-version-configured&quot;: &quot;true&quot;,
+    &quot;last_opened_file_path&quot;: &quot;C:/Users/longi/COMS/coms3620/six-flags/Iteration 1/David Watson/Six Flags&quot;,
+    &quot;nodejs_package_manager_path&quot;: &quot;npm&quot;,
+    &quot;onboarding.tips.debug.path&quot;: &quot;C:/Users/longi/COMS/coms3090/5_rk_2/Backend/Six Flags/src/Main.java&quot;
   }
-}]]></component>
-  <component name="QodanaHighlightedReportService">
-    <option name="localRunNotPublishedPersistedInfo">
-      <LocalReportPersistedInfo>
-        <option name="path" value="C:\Users\longi\AppData\Local\Temp\qodana_output\qodana.sarif.json" />
-        <option name="reportGuid" value="e7f94c0d-ac6e-4ace-b2ed-afe6bb1dd7ab" />
-        <option name="reportName" value="Six Flags/qodana/2026-04-30" />
-      </LocalReportPersistedInfo>
-    </option>
-  </component>
-  <component name="QodanaIsSelectedPersistenceService">
-    <option name="selectedOrLoading" value="true" />
-  </component>
-  <component name="QodanaReportsService">
-    <option name="descriptions">
-      <ReportDescription localRun="true" path="C:\Users\longi\AppData\Local\Temp\qodana_output\qodana.sarif.json" reportGuid="e7f94c0d-ac6e-4ace-b2ed-afe6bb1dd7ab" reportId="Six Flags/qodana/2026-04-30" />
-    </option>
-  </component>
-  <component name="RecentsManager">
-    <key name="CopyClassDialog.RECENTS_KEY">
-      <recent name="models.item.addOns" />
-      <recent name="models.item.decorators" />
-    </key>
+}</component>
+  <component name="RunManager">
+    <configuration default="true" type="JetRunConfigurationType">
+      <method v="2">
+        <option name="Make" enabled="true" />
+      </method>
+    </configuration>
+    <configuration default="true" type="KotlinStandaloneScriptRunConfigurationType">
+      <option name="filePath" />
+      <method v="2" />
+    </configuration>
   </component>
   <component name="TaskManager">
     <task active="true" id="Default" summary="Default task">

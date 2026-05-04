@@ -1,16 +1,15 @@
 package data;
  
 import interfaces.ItemInventoryInterface;
-import interfaces.types.ItemType;
-import interfaces.types.Location;
-import models.item.CartItem;
-import models.item.InventoryItem;
-
+import interfaces.Location;
+import models.InventoryItem;
+import models.Item;
+ 
 import java.util.ArrayList;
 import java.util.List;
  
 public class ItemInventory implements ItemInventoryInterface {
-    private ArrayList<InventoryItem> inventory;
+    private ArrayList<Item> inventory;
     private ItemFileHandler fileHandler;
  
     public ItemInventory() {
@@ -21,23 +20,23 @@ public class ItemInventory implements ItemInventoryInterface {
     @Override
     public List<String> getItems() {
         List<String> names = new ArrayList<>();
-        for (InventoryItem item : inventory) {
+        for (Item item : inventory) {
             names.add(item.getInfo());
         }
         return names;
     }
  
-    public ArrayList<InventoryItem> getAllItems() {
+    public ArrayList<Item> getAllItems() {
         this.inventory = fileHandler.readItems();
         return inventory;
     }
  
-    public boolean verifyQuantity(InventoryItem item, int quantity) {
+    public boolean verifyQuantity(Item item, int quantity) {
         return item.getQuantity() >= quantity;
     }
  
     public int getQuantityFor(String name, Location location) {
-        for (InventoryItem item : inventory) {
+        for (Item item : inventory) {
             if (item.getName().equalsIgnoreCase(name) && item.getLocation() == location) {
                 return item.getQuantity();
             }
@@ -46,8 +45,8 @@ public class ItemInventory implements ItemInventoryInterface {
     }
  
     // Returns name of first cart item that can't be fulfilled, or null if all OK
-    public String validateAllReductions(List<CartItem> cartItems) {
-        for (CartItem cartItem : cartItems) {
+    public String validateAllReductions(ArrayList<Item> cartItems) {
+        for (Item cartItem : cartItems) {
             int available = getQuantityFor(cartItem.getName(), cartItem.getLocation());
             if (available < cartItem.getQuantity()) {
                 return cartItem.getName();
@@ -57,15 +56,14 @@ public class ItemInventory implements ItemInventoryInterface {
     }
  
     // Call only after validateAllReductions returns null
-    public void commitAllReductions(List<CartItem> cartItems) {
-        for (CartItem cartItem : cartItems) {
+    public void commitAllReductions(ArrayList<Item> cartItems) {
+        for (Item cartItem : cartItems) {
             for (int i = 0; i < inventory.size(); i++) {
-                InventoryItem inv = inventory.get(i);
-                if (inv.getType() == cartItem.getType() &&
-                    inv.getName().equalsIgnoreCase(cartItem.getName()) &&
+                Item inv = inventory.get(i);
+                if (inv.getName().equalsIgnoreCase(cartItem.getName()) &&
                     inv.getLocation() == cartItem.getLocation()) {
                     int newQty = inv.getQuantity() - cartItem.getQuantity();
-                    inventory.set(i, new InventoryItem(inv.getItem(), inv.getType(), inv.getLocation(), newQty));
+                    inventory.set(i, new InventoryItem(inv.getName(), inv.getPrice(), inv.getLocation(), newQty));
                     break;
                 }
             }
@@ -73,26 +71,24 @@ public class ItemInventory implements ItemInventoryInterface {
         fileHandler.writeAllItems(inventory);
     }
  
-    public int increaseQuantity(ItemType type, String name, double price, Location location, int amount) {
+    public int increaseQuantity(String name, double price, Location location, int amount) {
         for (int i = 0; i < inventory.size(); i++) {
-            InventoryItem item = inventory.get(i);
-            if (item.getType() == type &&
-                item.getName().equalsIgnoreCase(name) &&
-                item.getLocation() == location) {
+            Item item = inventory.get(i);
+            if (item.getName().equalsIgnoreCase(name) && item.getLocation() == location) {
                 int newQuantity = item.getQuantity() + amount;
-                inventory.set(i, new InventoryItem(item.getItem(), type, location, newQuantity));
+                inventory.set(i, new InventoryItem(name, item.getPrice(), location, newQuantity));
                 fileHandler.writeAllItems(inventory);
                 return newQuantity;
             }
         }
-        InventoryItem newItem = new InventoryItem(type.create(name, price), type, location, amount);
+        Item newItem = new InventoryItem(name, price, location, amount);
         inventory.add(newItem);
         fileHandler.writeItem(newItem);
         return amount;
     }
  
-    public boolean addItem(InventoryItem item) {
-        for (InventoryItem existing : inventory) {
+    public boolean addItem(Item item) {
+        for (Item existing : inventory) {
             if (existing.getName().equalsIgnoreCase(item.getName()) &&
                 existing.getLocation() == item.getLocation()) {
                 return false;
@@ -102,7 +98,7 @@ public class ItemInventory implements ItemInventoryInterface {
         return fileHandler.writeItem(item);
     }
  
-    public boolean removeItem(InventoryItem item) {
+    public boolean removeItem(Item item) {
         if (inventory.contains(item)) {
             inventory.remove(item);
             return true;
