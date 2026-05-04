@@ -1,7 +1,7 @@
 package ui;
 
-import models.item.CartItem;
-import models.item.ItemConfirmation;
+import models.Item;
+import models.ItemConfirmation;
 
 import java.util.List;
 import java.util.Scanner;
@@ -46,7 +46,7 @@ public class ValidationUI {
     }
 
     private void showItemSelection() {
-        List<CartItem> items = itemConfirmation.getDataProvider().getAllItems();
+        List<Item>   items = itemConfirmation.getDataProvider().getAllItems();
         List<String> ids   = itemConfirmation.getDataProvider().getAllIds();
 
         boolean running = true;
@@ -58,7 +58,7 @@ public class ValidationUI {
             System.out.printf("  %-4s %-25s %-20s %-10s%n", "No.", "Name", "Location", "Status");
             System.out.println("  " + "-".repeat(60));
             for (int i = 0; i < items.size(); i++) {
-                CartItem item = items.get(i);
+                Item item = items.get(i);
                 System.out.printf("  %-4s %-25s %-20s %-10s%n",
                     (i + 1) + ".",
                     item.getName(),
@@ -95,7 +95,7 @@ public class ValidationUI {
         router.printBanner();
         boolean ok    = itemConfirmation.validateItem(itemId);
         String result = itemConfirmation.getGenMessage();
-        CartItem item = itemConfirmation.getItem();
+        Item item     = itemConfirmation.getItem();
 
         System.out.println(ANSI_BOLD + "  Validation Result" + ANSI_RESET);
         System.out.println("  " + "-".repeat(40));

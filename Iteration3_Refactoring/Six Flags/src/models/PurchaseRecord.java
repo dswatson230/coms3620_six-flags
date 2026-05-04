@@ -1,13 +1,13 @@
 package models;
 
-import models.item.CartItem;
+import interfaces.Location;
 
 import java.util.ArrayList;
 import java.util.List;
 
 public class PurchaseRecord {
     private final String    recordId;
-    private final List<CartItem> items;
+    private final List<Item> items;
     private String          status;
 
     // Non-refundable item names
@@ -17,14 +17,14 @@ public class PurchaseRecord {
         "Popcorn", "Soft Pretzel"
     );
 
-    public PurchaseRecord(String recordId, List<CartItem> items, String status) {
+    public PurchaseRecord(String recordId, List<Item> items, String status) {
         this.recordId = recordId;
         this.items    = new ArrayList<>(items);
         this.status   = status;
     }
 
     public String    getRecordId()  { return recordId; }
-    public List<CartItem> getItems()    { return items; }
+    public List<Item> getItems()    { return items; }
     public String    getStatus()    { return status; }
     public void setStatus(String status) { this.status = status; }
 
@@ -36,15 +36,15 @@ public class PurchaseRecord {
     }
 
     // Find item by index (0-based) — avoids duplicate name collision
-    public CartItem findItemByIndex(int index) {
+    public Item findItemByIndex(int index) {
         if (index < 0 || index >= items.size()) return null;
         return items.get(index);
     }
 
     // Find first item matching name — kept for compatibility
-    public CartItem findItem(String itemName) {
-        for (CartItem item : items) {
-            if (item.getItem().getName().equalsIgnoreCase(itemName)) return item;
+    public Item findItem(String itemName) {
+        for (Item item : items) {
+            if (item.getName().equalsIgnoreCase(itemName)) return item;
         }
         return null;
     }
@@ -53,12 +53,11 @@ public class PurchaseRecord {
         StringBuilder sb = new StringBuilder();
         sb.append(recordId).append("|").append(status).append("|");
         for (int i = 0; i < items.size(); i++) {
-            CartItem item = items.get(i);
-            sb.append(item.getType().name()).append(",")
-              .append(item.getName()).append(",")
+            Item item = items.get(i);
+            sb.append(item.getName()).append(",")
               .append(item.getPrice()).append(",")
-              .append(item.getLocation().name()).append(",")
-              .append(item.getQuantity());
+              .append(item.getQuantity()).append(",")
+              .append(item.getLocation().name());
             if (i < items.size() - 1) sb.append(";");
         }
         return sb.toString();

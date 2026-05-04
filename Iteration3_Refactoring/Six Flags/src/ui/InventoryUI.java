@@ -1,9 +1,8 @@
 package ui;
 
 import controllers.ItemController;
-import interfaces.types.ItemType;
-import interfaces.types.Location;
-import models.item.InventoryItem;
+import interfaces.Location;
+import models.Item;
 
 import java.util.ArrayList;
 import java.util.Scanner;
@@ -57,7 +56,7 @@ public class InventoryUI {
     private void showViewInventory() {
         router.clearScreen();
         router.printBanner();
-        ArrayList<InventoryItem> allItems = controller.getAllItems();
+        ArrayList<Item> allItems = controller.getAllItems();
         System.out.println(ANSI_BOLD + "  Current Inventory" + ANSI_RESET);
         System.out.println("  " + "-".repeat(70));
         System.out.printf("  %-25s %-10s %-10s %-20s%n", "Name", "Price", "Qty", "Location");
@@ -65,7 +64,7 @@ public class InventoryUI {
         if (allItems.isEmpty()) {
             System.out.println("  No items in inventory.");
         } else {
-            for (InventoryItem item : allItems) {
+            for (Item item : allItems) {
                 System.out.printf("  %-25s %-10s %-10s %-20s%n",
                     item.getName(),
                     String.format("$%.2f", item.getPrice()),
@@ -124,8 +123,8 @@ public class InventoryUI {
             System.out.printf("  %-4s %-25s %-10s %-10s%n", "No.", "Name", "Price", "In Stock");
             System.out.println("  " + "-".repeat(55));
             for (int i = 0; i < templates.length; i++) {
-                String name  = (String) templates[i][1];
-                double price = (double) templates[i][2];
+                String name  = (String) templates[i][0];
+                double price = (double) templates[i][1];
                 int qty      = controller.getQuantityFor(name, location);
                 System.out.printf("  %-4s %-25s %-10s %-10s%n",
                     (i + 1) + ".",
@@ -150,11 +149,10 @@ public class InventoryUI {
             if (selection == templates.length + 1) {
                 running = false;
             } else if (selection >= 1 && selection <= templates.length) {
-                ItemType type = (ItemType) templates[selection - 1][0];
-                String name  = (String) templates[selection - 1][1];
-                double price = (double) templates[selection - 1][2];
+                String name  = (String) templates[selection - 1][0];
+                double price = (double) templates[selection - 1][1];
                 int currentQty = controller.getQuantityFor(name, location);
-                showQuantityInput(type, name, price, location, currentQty);
+                showQuantityInput(name, price, location, currentQty);
             } else {
                 System.out.println(ANSI_RED + "  Invalid selection." + ANSI_RESET);
                 router.pause();
@@ -162,7 +160,7 @@ public class InventoryUI {
         }
     }
 
-    private void showQuantityInput(ItemType type, String name, double price, Location location, int currentQty) {
+    private void showQuantityInput(String name, double price, Location location, int currentQty) {
         router.clearScreen();
         router.printBanner();
         System.out.println(ANSI_BOLD + "  Add Stock" + ANSI_RESET);
@@ -187,7 +185,7 @@ public class InventoryUI {
             return;
         }
 
-        int newTotal = controller.increaseQuantity(type, name, price, location, amount);
+        int newTotal = controller.increaseQuantity(name, price, location, amount);
         System.out.println(ANSI_GREEN + "  " + name + " updated! Added: " + amount + " | New total: " + newTotal + ANSI_RESET);
         router.pause();
     }

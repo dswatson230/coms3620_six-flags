@@ -1,11 +1,11 @@
-package models.item;
+package models;
  
 import data.TestDataProvider;
-import interfaces.types.ItemStatus;
+import interfaces.ItemStatus;
  
-public class ItemConfirmation  {
+public class ItemConfirmation implements interfaces.ItemConfirmationInterface {
     private String genMessage;
-    private CartItem item;
+    private Item item;
  
     private final TestDataProvider dataProvider;
  
@@ -26,23 +26,22 @@ public class ItemConfirmation  {
             setGenMessage("Item is invalid. Process denied.");
             return false;
         }
-        ItemStatus originalStatus = item.getStatus();
         verifyItemStatus(item);
-        return originalStatus == ItemStatus.VALID;
+        return item.getStatus() == ItemStatus.VALID;
     }
  
     // Step 2: Retrieve item from system
-    public CartItem retrieveItemInformation(String id) {
+    public Item retrieveItemInformation(String id) {
         return dataProvider.getTestItem(id);
     }
  
     // Step 3: Check if item is valid
-    public boolean isItemValid(CartItem item) {
+    public boolean isItemValid(Item item) {
         return item != null && item.getStatus() != ItemStatus.INVALID;
     }
  
     // Step 4 & 6: Verify and update item status
-    public void verifyItemStatus(CartItem item) {
+    public void verifyItemStatus(Item item) {
         if (item.getStatus() == ItemStatus.USED) {
             setGenMessage("Item has already been used or processed. Process denied.");
         } else if (item.getStatus() == ItemStatus.VALID) {
@@ -53,7 +52,7 @@ public class ItemConfirmation  {
  
     public String getGenMessage()          { return genMessage; }
     public void setGenMessage(String msg)  { this.genMessage = msg; }
-    public CartItem getItem()                  { return item; }
-    public void setItem(CartItem item)         { this.item = item; }
+    public Item getItem()                  { return item; }
+    public void setItem(Item item)         { this.item = item; }
     public data.TestDataProvider getDataProvider() { return dataProvider; }
 }

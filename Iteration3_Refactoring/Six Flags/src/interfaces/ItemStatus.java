@@ -1,4 +1,4 @@
-package interfaces.types;
+package interfaces;
  
 public enum ItemStatus {
     VALID,
