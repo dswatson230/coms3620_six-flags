@@ -1,3 +1,0 @@
-General Admission,39.99,0,GREAT_AMERICA
-General Admission,39.99,6,OVER_GEORGIA
-General Admission,39.99,3,MAGIC_MOUNTAIN

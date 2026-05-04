@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="AutoImportSettings">
+    <option name="autoReloadType" value="SELECTIVE" />
+  </component>
+  <component name="ChangeListManager">
+    <list default="true" id="712f6f06-a699-4b62-869f-3d93bf54c48d" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/workspace.xml" beforeDir="false" afterPath="$PROJECT_DIR$/.idea/workspace.xml" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/interfaces/types/ItemType.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/interfaces/types/ItemType.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/item/decorators/MealPlanDecorator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/item/decorators/MealPlanDecorator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/item/decorators/ParkingDecorator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/item/decorators/ParkingDecorator.java" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/src/models/item/decorators/VIPDecorator.java" beforeDir="false" afterPath="$PROJECT_DIR$/src/models/item/decorators/VIPDecorator.java" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="FileTemplateManagerImpl">
+    <option name="RECENT_TEMPLATES">
+      <list>
+        <option value="Interface" />
+        <option value="Enum" />
+        <option value="Class" />
+      </list>
+    </option>
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$/../.." />
+  </component>
+  <component name="GitLabMergeRequestFiltersHistory">{
+  &quot;lastFilter&quot;: {
+    &quot;state&quot;: &quot;OPENED&quot;,
+    &quot;assignee&quot;: {
+      &quot;type&quot;: &quot;org.jetbrains.plugins.gitlab.mergerequest.ui.filters.GitLabMergeRequestsFiltersValue.MergeRequestsMemberFilterValue.MergeRequestsAssigneeFilterValue&quot;,
+      &quot;username&quot;: &quot;dwats23&quot;,
+      &quot;fullname&quot;: &quot;Watson, David S&quot;
+    }
+  }
+}</component>
+  <component name="GitLabMergeRequestsSettings">{
+  &quot;selectedUrlAndAccountId&quot;: {
+    &quot;first&quot;: &quot;https://git.las.iastate.edu/cs362/six-flags&quot;,
+    &quot;second&quot;: &quot;b379b14f-5b67-4cde-b322-b70da58847ad&quot;
+  }
+}</component>
+  <component name="ProblemsViewState">
+    <option name="selectedTabId" value="CurrentFile" />
+  </component>
+  <component name="ProjectColorInfo">{
+  &quot;associatedIndex&quot;: 3,
+  &quot;fromUser&quot;: false
+}</component>
+  <component name="ProjectId" id="3C6mc1FV4PZUhNDxFfbXsBgySTc" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "Application.Main.executor": "Run",
+    "Application.Park.executor": "Run",
+    "Application.UserInterface.executor": "Run",
+    "ModuleVcsDetector.initialDetectionPerformed": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "RunOnceActivity.git.unshallow": "true",
+    "RunOnceActivity.typescript.service.memoryLimit.init": "true",
+    "SHARE_PROJECT_CONFIGURATION_FILES": "true",
+    "codeWithMe.voiceChat.enabledByDefault": "false",
+    "git-widget-placeholder": "watson-purchase-decorator",
+    "kotlin-language-version-configured": "true",
+    "last_opened_file_path": "C:/Users/longi/COMS/coms3620/six-flags/Iteration3_Refactoring/Six Flags",
+    "nodejs_package_manager_path": "npm",
+    "onboarding.tips.debug.path": "C:/Users/longi/COMS/coms3090/5_rk_2/Backend/Six Flags/src/Main.java",
+    "settings.editor.selected.configurable": "reference.settings.ide.settings.notifications"
+  }
+}]]></component>
+  <component name="RecentsManager">
+    <key name="CopyClassDialog.RECENTS_KEY">
+      <recent name="models.item.addOns" />
+      <recent name="models.item.decorators" />
+    </key>
+  </component>
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="712f6f06-a699-4b62-869f-3d93bf54c48d" name="Changes" comment="" />
+      <created>1775714471043</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1775714471043</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="TypeScriptGeneratedFilesManager">
+    <option name="version" value="3" />
+  </component>
+  <component name="XSLT-Support.FileAssociations.UIState">
+    <expand />
+    <select />
+  </component>
+</project>

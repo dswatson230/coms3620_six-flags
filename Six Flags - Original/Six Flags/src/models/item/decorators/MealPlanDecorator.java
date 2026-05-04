@@ -2,7 +2,6 @@ package models.item.decorators;
 
 import interfaces.ItemInterface;
 import interfaces.types.MealPlanType;
-
 import java.util.ArrayList;
 import java.util.List;
 
