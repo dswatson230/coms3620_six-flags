@@ -1,9 +1,9 @@
 package data;
 
-import interfaces.types.ItemType;
-import interfaces.types.Location;
+import interfaces.Location;
 import interfaces.PurchaseFileHandlerInterface;
-import models.item.CartItem;
+import models.InventoryItem;
+import models.Item;
 import models.PurchaseRecord;
 
 import java.io.IOException;
@@ -63,11 +63,11 @@ public class PurchaseFileHandler implements PurchaseFileHandlerInterface {
         boolean updated = false;
         for (PurchaseRecord record : records) {
             if (record.getRecordId().equals(recordId)) {
-                List<CartItem> items = record.getItems();
+                List<Item> items = record.getItems();
                 if (itemIndex >= 0 && itemIndex < items.size()) {
-                    CartItem item = items.get(itemIndex);
-                    items.set(itemIndex, new CartItem(
-                        item.getItem(), item.getType(), item.getLocation(), newQuantity));
+                    Item item = items.get(itemIndex);
+                    items.set(itemIndex, new InventoryItem(
+                        item.getName(), item.getPrice(), item.getLocation(), newQuantity));
                     updated = true;
                 }
                 break;
@@ -99,7 +99,7 @@ public class PurchaseFileHandler implements PurchaseFileHandlerInterface {
     }
 
     private PurchaseRecord parseRecord(String line) {
-        // Format: recordId|status|type,name,price,location,qty;type,name,price,location,qty
+        // Format: recordId|status|name,price,qty,location;name,price,qty,location
         String[] parts = line.split("\\|");
         if (parts.length != 3) return null;
 
@@ -107,17 +107,16 @@ public class PurchaseFileHandler implements PurchaseFileHandlerInterface {
         String status    = parts[1].trim();
         String itemsPart = parts[2].trim();
 
-        List<CartItem> items = new ArrayList<>();
+        List<Item> items = new ArrayList<>();
         if (!itemsPart.isEmpty()) {
             for (String itemStr : itemsPart.split(";")) {
                 String[] fields = itemStr.split(",");
-                if (fields.length == 5) {
-                    ItemType type = ItemType.valueOf(fields[0].trim());
-                    items.add(new CartItem(
-                        type.create(fields[1].trim(), Double.parseDouble(fields[2].trim())),
-                        type,
+                if (fields.length == 4) {
+                    items.add(new InventoryItem(
+                        fields[0].trim(),
+                        Double.parseDouble(fields[1].trim()),
                         Location.valueOf(fields[3].trim()),
-                        Integer.parseInt(fields[4].trim())
+                        Integer.parseInt(fields[2].trim())
                     ));
                 }
             }

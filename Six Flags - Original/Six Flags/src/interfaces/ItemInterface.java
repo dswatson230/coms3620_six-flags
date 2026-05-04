@@ -1,12 +1,11 @@
 package interfaces;
-
-import java.util.List;
-
+ 
 public interface ItemInterface {
-    String getName();
     double getPrice();
-    List<String> getBenefits();
-
     String getInfo();
+    String getName();
+    int getQuantity();
+    Location getLocation();
+    ItemStatus getStatus();
 }
  

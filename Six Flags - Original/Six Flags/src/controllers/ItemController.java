@@ -3,28 +3,25 @@ package controllers;
 import data.ItemInventory;
 import data.PurchaseFileHandler;
 import interfaces.ItemControllerInterface;
-import interfaces.types.ItemAddOns;
-import interfaces.types.ItemType;
-import interfaces.types.Location;
-import models.item.InventoryItem;
-import models.item.decorators.AddOnSelection;
+import interfaces.Location;
+import models.Item;
 
 import java.util.ArrayList;
-import java.util.List;
 
 public class ItemController implements ItemControllerInterface {
-    //private static final String PURCHASE_FILE_PATH = "data/purchases.txt";
-    private static final String PURCHASE_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/purchases.txt";
+    private static final String PURCHASE_FILE_PATH = "data/purchases.txt";
+    //private static final String PURCHASE_FILE_PATH = "C:/Users/longi/COMS/coms3620/six-flags/Six Flags/data/purchases.txt";
 
     private PurchaseController purchaseController;
     private StoreController    storeController;
     private final ItemInventory    sharedInventory;
 
     public ItemController() {
-        this.sharedInventory     = new ItemInventory();
+        ItemInventory       sharedInventory     = new ItemInventory();
         PurchaseFileHandler purchaseFileHandler = new PurchaseFileHandler(PURCHASE_FILE_PATH);
         this.purchaseController = new PurchaseController(sharedInventory, purchaseFileHandler);
         this.storeController    = new StoreController(sharedInventory);
+        this.sharedInventory = new ItemInventory();
     }
 
     @Override
@@ -41,7 +38,7 @@ public class ItemController implements ItemControllerInterface {
         return storeController.getItemTemplates();
     }
 
-    public ArrayList<InventoryItem> getAllItems() {
+    public ArrayList<Item> getAllItems() {
         return storeController.getAllItems();
     }
 
@@ -49,20 +46,20 @@ public class ItemController implements ItemControllerInterface {
         return storeController.getQuantityFor(name, location);
     }
 
-    public int increaseQuantity(ItemType type, String name, double price, Location location, int amount) {
-        return storeController.increaseQuantity(type, name, price, location, amount);
+    public int increaseQuantity(String name, double price, Location location, int amount) {
+        return storeController.increaseQuantity(name, price, location, amount);
     }
 
     public String storeItemWithFeedback(String name, String priceInput, String quantityInput, String locationInput) {
         return storeController.storeItem(name, priceInput, quantityInput, locationInput);
     }
 
-    public ArrayList<InventoryItem> getAvailableItemsByLocation(Location location) {
+    public ArrayList<Item> getAvailableItemsByLocation(Location location) {
         return purchaseController.getAvailableItems(location);
     }
 
-    public String addToCart(InventoryItem item, int quantity, List<AddOnSelection> addOns) {
-        return purchaseController.addToCart(item, quantity, addOns);
+    public String addToCart(Item item, int quantity) {
+        return purchaseController.addToCart(item, quantity);
     }
 
     public void removeFromCart(int index) {
@@ -77,7 +74,7 @@ public class ItemController implements ItemControllerInterface {
         return purchaseController.calculateTotal();
     }
 
-    public List<String> getCartInfo() {
+    public String getCartInfo() {
         return purchaseController.getCartInfo();
     }
 

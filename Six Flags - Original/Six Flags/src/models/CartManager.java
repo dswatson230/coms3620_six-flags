@@ -1,14 +1,11 @@
 package models;
  
-import models.item.CartItem;
-
 import java.util.ArrayList;
-import java.util.List;
-
-public class CartManager {
-    private ArrayList<CartItem> cart = new ArrayList<>();
  
-    public void addItem(CartItem item) {
+public class CartManager {
+    private ArrayList<Item> cart = new ArrayList<>();
+ 
+    public void addItem(Item item) {
         cart.add(item);
     }
  
@@ -24,35 +21,22 @@ public class CartManager {
  
     public double calculateTotal() {
         double total = 0;
-        for (CartItem item : cart) {
-            total += item.getItem().getPrice() * item.getQuantity();
+        for (Item item : cart) {
+            total += item.getPrice() * item.getQuantity();
         }
         return total;
     }
-
-    public List<String> getCartInfo() {
-        List<String> output = new ArrayList<>();
-
-        if (cart.isEmpty()) {
-            output.add("Cart is empty.");
-            return output;
-        }
-
-        output.add("Cart:");
-
+ 
+    public String getCartInfo() {
+        if (cart.isEmpty()) return "Cart is empty.";
+        String output = "Cart:\n";
         for (int i = 0; i < cart.size(); i++) {
-            CartItem cartItem = cart.get(i);
-
-            output.add(" " + (i + 1) + ". " + cartItem.getInfo());
-            for (String benefit : cartItem.getItem().getBenefits()) {
-                output.add("      - " + benefit);
-            }
+            output += " " + (i + 1) + ". " + cart.get(i).getInfo() + "\n";
         }
-
         return output;
     }
  
-    public ArrayList<CartItem> getCart() {
+    public ArrayList<Item> getCart() {
         return cart;
     }
  
